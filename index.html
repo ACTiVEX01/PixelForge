@@ -12,7 +12,7 @@
     <meta property="og:description" content="Your ultimate destination for gaming news, game development insights, and deep dives into interactive entertainment.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pixelforge.blog/">
-    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
+    <meta property="og:image" content="https://pixelforge.blog/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@pixelforgeblog">
     <title>PixelForge - Gaming & Game Development Blog</title>
@@ -29,51 +29,50 @@
             <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="/" class="active">Home</a></li>
-                <li><a href="/articles.html">Articles</a></li>
-                <li><a href="/category/game-dev.html">Game Dev</a></li>
-                <li><a href="/category/news.html">News</a></li>
-                <li><a href="/category/reviews.html">Reviews</a></li>
+                <li><a href="/articles">Articles</a></li>
+                <li><a href="/category/game-dev">Game Dev</a></li>
+                <li><a href="/category/news">News</a></li>
+                <li><a href="/category/reviews">Reviews</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
-                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="nav-btn" onclick="toggleSearch()" aria-label="Search">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()" aria-label="Bookmarks">🔖</button>
                 <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
-                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Menu"><span></span><span></span><span></span></button>
             </div>
         </div>
     </nav>
 
-    <div class="search-overlay" id="searchOverlay">
+    <div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Search">
         <div class="search-container">
-            <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search articles, topics, tags..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div>
+            <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search articles, topics, tags..." oninput="handleSearch(this.value)" aria-label="Search"><button class="search-close" onclick="toggleSearch()" aria-label="Close">✕</button></div>
             <div class="search-tags">
                 <button class="search-tag" onclick="setSearchQuery('Game Development')">Game Development</button>
                 <button class="search-tag" onclick="setSearchQuery('Indie Games')">Indie Games</button>
                 <button class="search-tag" onclick="setSearchQuery('Unity')">Unity</button>
-                <button class="search-tag" onclick="setSearchQuery('Unreal Engine')">Unreal Engine</button>
             </div>
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="bookmarksModal">
+    <div class="modal-overlay" id="bookmarksModal" role="dialog" aria-label="Bookmarks">
         <div class="modal">
-            <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div>
+            <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()" aria-label="Close">✕</button></div>
             <div class="modal-body" id="bookmarksList"></div>
         </div>
     </div>
 
     <main>
-        <section style="padding: 140px 2rem 80px; position: relative; overflow: hidden;">
+        <section style="padding:140px 2rem 80px;position:relative;overflow:hidden;">
             <div style="position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(0,245,255,0.15),transparent 70%);pointer-events:none;"></div>
             <div class="container" style="position:relative;z-index:1;">
                 <div style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.3);border-radius:50px;color:var(--accent-primary);font-size:0.9rem;font-weight:500;margin-bottom:1.5rem;"><span>⚡</span> New articles published weekly</div>
                 <h1 style="font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem;">Your Source for<br><span class="gradient-text">Gaming & Game Dev</span><br>Stories</h1>
                 <p style="font-size:1.25rem;color:var(--text-secondary);max-width:600px;margin-bottom:2.5rem;line-height:1.7;">Deep dives into game development, breaking industry news, honest reviews, and the stories behind your favorite games.</p>
                 <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;">
-                    <a href="/articles.html" class="btn-primary">Start Reading →</a>
-                    <a href="/category/game-dev.html" class="btn-secondary">Browse Game Dev</a>
+                    <a href="/articles" class="btn-primary">Start Reading →</a>
+                    <a href="/category/game-dev" class="btn-secondary">Browse Game Dev</a>
                 </div>
                 <div style="display:flex;gap:3rem;flex-wrap:wrap;">
                     <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--accent-primary);" id="articleCount">0</div><div style="color:var(--text-muted);font-size:0.9rem;">Articles</div></div>
@@ -100,7 +99,7 @@
                     <h2>Join the PixelForge Newsletter</h2>
                     <p>Get the latest game dev insights, industry news, and exclusive content delivered to your inbox every week.</p>
                     <form class="newsletter-form" id="newsletterForm">
-                        <input type="email" placeholder="Enter your email address" required>
+                        <input type="email" placeholder="Enter your email address" required aria-label="Email address">
                         <button type="submit">Subscribe →</button>
                     </form>
                     <div class="newsletter-success" id="newsletterSuccess">✅ You're in! Check your inbox for confirmation.</div>
@@ -109,7 +108,7 @@
         </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -119,16 +118,15 @@
                         <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
                         <a href="#" class="social-link" aria-label="YouTube">▶</a>
                         <a href="#" class="social-link" aria-label="Discord">💬</a>
-                        <a href="#" class="social-link" aria-label="GitHub">⌨</a>
                     </div>
                 </div>
                 <div class="footer-column">
                     <h4>Categories</h4>
-                    <a href="/category/game-dev.html">Game Development</a>
-                    <a href="/category/news.html">Gaming News</a>
-                    <a href="/category/reviews.html">Game Reviews</a>
-                    <a href="/category/tutorials.html">Tutorials</a>
-                    <a href="/category/indie-games.html">Indie Games</a>
+                    <a href="/category/game-dev">Game Development</a>
+                    <a href="/category/news">Gaming News</a>
+                    <a href="/category/reviews">Game Reviews</a>
+                    <a href="/category/tutorials">Tutorials</a>
+                    <a href="/category/indie-games">Indie Games</a>
                 </div>
                 <div class="footer-column">
                     <h4>Resources</h4>
@@ -139,36 +137,86 @@
                 </div>
                 <div class="footer-column">
                     <h4>Company</h4>
-                    <a href="/about.html">About Us</a>
-                    <a href="/contact.html">Contact</a>
-                    <a href="/contact.html">Write for Us</a>
-                    <a href="/contact.html">Advertise</a>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/contact">Write for Us</a>
+                    <a href="/contact">Advertise</a>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p>
                 <div class="footer-bottom-links">
-                    <a href="/privacy.html">Privacy Policy</a>
-                    <a href="/terms.html">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top">↑</button>
     <div class="toast-container" id="toastContainer"></div>
 
+    <script>
+    // ===== CONFIG - CHANGE THIS TO YOUR INFINITYFREE DOMAIN =====
+    const API_URL = 'https://your-infinityfree-domain.infinityfreeapp.com/api';
+    // ============================================================
+    </script>
     <script src="/assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            document.getElementById('articleCount').textContent = articlesData.length;
+            
+            const cats = [
+                {id:'game-dev',name:'Game Development',icon:'💻',class:'game-dev'},
+                {id:'news',name:'Gaming News',icon:'📰',class:'news'},
+                {id:'reviews',name:'Game Reviews',icon:'⭐',class:'reviews'},
+                {id:'tutorials',name:'Tutorials',icon:'📚',class:'tutorials'},
+                {id:'indie-games',name:'Indie Games',icon:'🎮',class:'indie-games'}
+            ];
+            
             const catGrid = document.getElementById('categoriesGrid');
+            const countEl = document.getElementById('articleCount');
+            
             if (catGrid) {
-                catGrid.innerHTML = categoriesData.map(cat => `<a href="/category/${cat.slug}.html" style="display:flex;align-items:center;gap:1rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);transition:var(--transition);text-decoration:none;" onmouseover="this.style.borderColor='var(--accent-primary)';this.style.transform='translateY(-5px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform=''"><span style="font-size:2rem;">${cat.icon}</span><div><h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.25rem;">${cat.name}</h3><p style="color:var(--text-muted);font-size:0.85rem;">${articlesData.filter(a => a.category === cat.id).length} articles</p></div></a>`).join('');
+                try {
+                    const url = new URL(API_URL + '/index.php');
+                    url.searchParams.set('action', 'get_categories');
+                    const r = await fetch(url);
+                    const d = await r.json();
+                    if (d.categories) {
+                        const catMap = {};
+                        d.categories.forEach(c => catMap[c.category] = c.count);
+                        catGrid.innerHTML = cats.map(c => `<a href="/category/${c.id}" style="display:flex;align-items:center;gap:1rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);transition:var(--transition);text-decoration:none;" onmouseover="this.style.borderColor='var(--accent-primary)';this.style.transform='translateY(-5px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform=''"><span style="font-size:2rem;">${c.icon}</span><div><h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.25rem;">${c.name}</h3><p style="color:var(--text-muted);font-size:0.85rem;">${catMap[c.id]||0} articles</p></div></a>`).join('');
+                    }
+                } catch(e) {
+                    catGrid.innerHTML = cats.map(c => `<a href="/category/${c.id}" style="display:flex;align-items:center;gap:1rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);text-decoration:none;"><span style="font-size:2rem;">${c.icon}</span><div><h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.25rem;">${c.name}</h3><p style="color:var(--text-muted);font-size:0.85rem;">0 articles</p></div></a>`).join('');
+                }
             }
-            renderBlogCards(document.getElementById('dynamicContent'), articlesData, true);
+            
+            // Load posts
+            try {
+                const url = new URL(API_URL + '/index.php');
+                url.searchParams.set('action', 'get_posts');
+                url.searchParams.set('page', '1');
+                const r = await fetch(url);
+                const d = await r.json();
+                if (d.posts && d.posts.length) {
+                    countEl.textContent = d.total || d.posts.length;
+                    const container = document.getElementById('dynamicContent');
+                    const f = d.posts[0];
+                    container.innerHTML = `<section style="padding:0 0 4rem;"><div class="container"><div class="section-header"><h2 class="section-title"><span class="dot"></span> Featured</h2><a href="/articles" class="view-all">View All →</a></div><a href="/article/${f.slug}" class="featured-post fade-in"><div class="featured-image"><img src="${f.featured_image||''}" alt="${f.title}" loading="eager"><span class="featured-badge">Featured</span></div><div class="featured-content"><div class="post-meta"><span class="category-badge ${f.category}">${f.category.replace('-',' ').toUpperCase()}</span><span class="meta-item">${f.published_at?new Date(f.published_at).toLocaleDateString():''}</span></div><h2>${f.title}</h2><p>${f.excerpt||''}</p><div class="author-row"><img src="${f.author_avatar||''}" alt="${f.author_name}" class="author-avatar"><div class="author-info"><div class="author-name">${f.author_name||'Staff'}</div></div></div></div></a></div></section><section style="padding:0 0 4rem;"><div class="container"><div class="section-header"><h2 class="section-title"><span class="dot"></span> Latest Articles</h2></div><div class="blog-grid">${d.posts.slice(1).map(p=>renderCard(p)).join('')}</div></div></section>`;
+                } else {
+                    document.getElementById('dynamicContent').innerHTML = '<div class="container" style="text-align:center;padding:4rem;"><h2>No articles yet</h2><p style="color:var(--text-muted)">Check back soon for new content!</p></div>';
+                }
+                setTimeout(() => document.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible')), 100);
+            } catch(e) {
+                document.getElementById('dynamicContent').innerHTML = '<div class="container" style="text-align:center;padding:4rem;"><h2>Unable to load articles</h2><p style="color:var(--text-muted)">Please check back later.</p></div>';
+            }
         });
+        
+        function renderCard(p) {
+            return `<article class="blog-card fade-in"><div class="card-image"><a href="/article/${p.slug}"><img src="${p.featured_image||''}" alt="${p.title}" loading="lazy"></a><div class="card-actions"><button class="card-action-btn" onclick="event.preventDefault();toggleBookmark('${p.slug}')" title="Bookmark">☆</button></div></div><div class="card-body"><div class="card-tags"><span class="category-badge ${p.category}">${p.category.replace('-',' ').toUpperCase()}</span></div><h3><a href="/article/${p.slug}">${p.title}</a></h3><p class="card-excerpt">${p.excerpt||''}</p><div class="card-footer"><div class="card-author"><div class="card-author-info"><div class="card-author-name">${p.author_name||'Staff'}</div><div class="card-author-date">${p.published_at?new Date(p.published_at).toLocaleDateString():''}</div></div></div><div class="card-stats"><span class="card-stat">👁️ ${p.views||0}</span></div></div></div></article>`;
+        }
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26e37a5ee928cd',t:'MTc3NzIyMDE1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
