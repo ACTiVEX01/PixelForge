@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Loading... | PixelForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-grid"></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li><li><a href="/articles">Articles</a></li><li><a href="/category/game-dev">Game Dev</a></li><li><a href="/category/news">News</a></li><li><a href="/category/reviews">Reviews</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
+    <div class="modal-overlay" id="bookmarksModal"><div class="modal"><div class="modal-header"><h3>🔖 Saved</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div><div class="modal-body" id="bookmarksList"></div></div></div>
+
+    <main id="articleMain" style="min-height:80vh;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;color:var(--text-muted);">Loading article...</div>
+    </main>
+
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
+
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>const API_URL='https://blockmines.page.gd/api';</script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        const slug = window.location.pathname.split('/').pop();
+        if (!slug) return;
+
+        try {
+            const url = new URL(API_URL + '/index.php');
+            url.searchParams.set('action', 'get_post');
+            url.searchParams.set('slug', slug);
+            const r = await fetch(url);
+            const d = await r.json();
+            
+            if (!d.post || d.error) {
+                document.getElementById('articleMain').innerHTML = '<div style="text-align:center;padding:4rem;"><h2>Article not found</h2><a href="/articles" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Browse Articles</a></div>';
+                return;
+            }
+            
+            const p = d.post;
+            window.postId = p.id;
+            
+            // Update SEO
+            document.title = (p.seo_title || p.title) + ' | PixelForge';
+            let meta = document.querySelector('meta[name="description"]');
+            if (!meta) { meta = document.createElement('meta'); meta.name = 'description'; document.head.appendChild(meta); }
+            meta.setAttribute('content', p.meta_description || p.excerpt || '');
+            
+            // JSON-LD
+            const ld = document.createElement('script');
+            ld.type = 'application/ld+json';
+            ld.textContent = JSON.stringify({"@context":"https://schema.org","@type":"BlogPosting","headline":p.title,"description":p.excerpt,"image":p.featured_image,"author":{"@type":"Person","name":p.author_name},"datePublished":p.published_at,"mainEntityOfPage":{"@type":"WebPage","@id":window.location.href}});
+            document.head.appendChild(ld);
+            
+            // AdSense injection
+            const adContent = p.content || '';
+            const adInArticle = '<div style="text-align:center;margin:2rem 0;"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="' + (window.ADCONFIG?.client || '') + '" data-ad-slot="' + (window.ADCONFIG?.inarticle || '') + '"></ins></div>';
+            
+            let contentHtml = adContent;
+            if (window.ADCONFIG?.inarticle) {
+                const paragraphs = contentHtml.split('</p>');
+                if (paragraphs.length > 4) {
+                    const insertAt = Math.floor(paragraphs.length / 2);
+                    paragraphs.splice(insertAt, 0, adInArticle + '</p>');
+                    contentHtml = paragraphs.join('</p>');
+                }
+            }
+            
+            document.getElementById('articleMain').innerHTML = `
+            <article class="content-width" style="padding:120px 2rem 4rem;margin:0 auto;">
+                <nav class="breadcrumb" style="padding:0 0 2rem;"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><a href="/articles">Articles</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">${p.title}</span></li></ol></nav>
+                <a href="/articles" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--text-secondary);margin-bottom:2rem;font-weight:500;">← Back to Articles</a>
+                <header class="article-header">
+                    <span class="article-category">${p.category.replace('-',' ').toUpperCase()}</span>
+                    <h1>${p.title}</h1>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <img src="${p.author_avatar||''}" alt="${p.author_name}">
+                            <div class="article-author-info"><h4>${p.author_name||'Staff'}</h4><p>${p.published_at?new Date(p.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''} • ${Math.ceil((p.content||'').split(' ').length/200)} min read</p></div>
+                        </div>
+                        <div class="article-stats">
+                            <span class="article-stat">👁️ ${p.views||0} views</span>
+                            <div class="article-share">
+                                <button class="share-btn" onclick="shareToTwitter('${p.title.replace(/'/g,"\\'")}')">𝕏</button>
+                                <button class="share-btn" onclick="shareToLinkedIn()">in</button>
+                                <button class="share-btn" onclick="shareArticle()">🔗</button>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                ${p.featured_image ? `<div style="width:100%;border-radius:var(--border-radius);margin-bottom:3rem;overflow:hidden;"><img src="${p.featured_image}" alt="${p.title}" style="width:100%;object-fit:cover;"></div>` : ''}
+                <div class="article-content">${contentHtml}</div>
+                <div class="article-tags">${(p.tags||'').split(',').filter(t=>t.trim()).map(t=>'<a href="/articles" class="article-tag">#'+t.trim()+'</a>').join('')}</div>
+                <div class="reactions">
+                    <button class="reaction-btn">🔥 <span>0</span></button>
+                    <button class="reaction-btn">👏 <span>0</span></button>
+                    <button class="reaction-btn">🎮 <span>0</span></button>
+                    <button class="reaction-btn">💡 <span>0</span></button>
+                    <button class="reaction-btn">❤️ <span>0</span></button>
+                </div>
+                ${p.related && p.related.length ? `<section style="margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border-color);"><h2 class="section-title"><span class="dot"></span> Related Articles</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem;">${p.related.map(r=>`<a href="/article/${r.slug}" class="bookmark-item"><img src="${r.featured_image||''}" alt="${r.title}"><div><h4>${r.title}</h4><p>${r.published_at?new Date(r.published_at).toLocaleDateString():''}</p></div></a>`).join('')}</div></section>` : ''}
+                <section class="comments-section">
+                    <h2 class="section-title"><span class="dot"></span> Comments</h2>
+                    <form class="comment-form" id="commentForm" style="margin-top:1.5rem;"><textarea placeholder="Share your thoughts..." required></textarea><div class="comment-form-actions"><button class="btn-primary" type="submit">Post Comment</button></div></form>
+                    <div class="comment-list">${(p.comments||[]).map(c=>`<div class="comment-item"><div class="comment-content"><div class="comment-header"><span class="comment-author">${c.author_name}</span><span class="comment-date">${new Date(c.created_at).toLocaleDateString()}</span></div><p class="comment-text">${c.content}</p></div></div>`).join('')}</div>
+                </section>
+            </article>`;
+            
+            initReactions();
+            initComments();
+        } catch(e) {
+            document.getElementById('articleMain').innerHTML = '<div style="text-align:center;padding:4rem;"><h2>Error loading article</h2><a href="/articles" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Browse Articles</a></div>';
+        }
+    });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26eb349982f655',t:'MTc3NzIyMDQ2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
