@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Game Reviews on PixelForge - Honest, in-depth reviews of the latest games.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pixelforge.blog/category/reviews.html">
+    <meta property="og:title" content="Game Reviews | PixelForge">
+    <meta property="og:description" content="Honest, in-depth reviews of the latest games across all platforms.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pixelforge.blog/category/reviews.html">
+    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@pixelforgeblog">
+    <title>Game Reviews | PixelForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-grid"></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li><li><a href="/articles.html">Articles</a></li><li><a href="/category/game-dev.html">Game Dev</a></li><li><a href="/category/news.html">News</a></li><li><a href="/category/reviews.html" class="active">Reviews</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+    <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
+    <div class="modal-overlay" id="bookmarksModal"><div class="modal"><div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div><div class="modal-body" id="bookmarksList"></div></div></div>
+    <main>
+        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><a href="/articles.html">Articles</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">Game Reviews</span></li></ol></div></nav>
+        <section class="container">
+            <div class="page-header"><h1>⭐ Game Reviews</h1><p>Honest, in-depth reviews of the latest games across all platforms.</p></div>
+            <div id="blogGrid" class="blog-grid"></div>
+            <div id="pagination" class="pagination"></div>
+        </section>
+    </main>
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev.html">Game Dev</a><a href="/category/news.html">News</a><a href="/category/reviews.html">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about.html">About</a><a href="/contact.html">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            const filtered = articlesData.filter(a => a.category === 'reviews');
+            document.getElementById('blogGrid').innerHTML = renderCardsGrid(filtered.slice(0, state.articlesPerPage));
+            renderPagination(filtered.length);
+            setTimeout(() => document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible')), 100);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26a71c6b236b93',t:'MTc3NzIxNzY3OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

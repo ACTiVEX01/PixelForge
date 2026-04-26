@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact PixelForge - reach out for inquiries, collaborations, guest writing, or advertising opportunities.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pixelforge.blog/contact.html">
+    <meta property="og:title" content="Contact Us | PixelForge">
+    <meta property="og:description" content="Get in touch with the PixelForge team for inquiries, collaborations, or partnerships.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pixelforge.blog/contact.html">
+    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@pixelforgeblog">
+    <title>Contact Us | PixelForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-grid"></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li><li><a href="/articles.html">Articles</a></li><li><a href="/category/game-dev.html">Game Dev</a></li><li><a href="/category/news.html">News</a></li><li><a href="/category/reviews.html">Reviews</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">Contact</span></li></ol></div></nav>
+        <section class="container" style="padding-top:2rem;"><div style="max-width:700px;margin:0 auto;">
+            <div class="page-header"><h1>Get in <span class="gradient-text">Touch</span></h1><p>Have a question, story idea, or want to collaborate? We'd love to hear from you.</p></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;">
+                <div style="padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">📧</div>
+                    <h3 style="margin-bottom:0.5rem;">Email</h3>
+                    <a href="/cdn-cgi/l/email-protection#18707d747477586871607d747e776a7f7d367a74777f" style="color:var(--accent-primary);"><span class="__cf_email__" data-cfemail="a7cfc2cbcbc8e7d7cedfc2cbc1c8d5c0c289c5cbc8c0">[email&#160;protected]</span></a>
+                </div>
+                <div style="padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+                    <h3 style="margin-bottom:0.5rem;">Discord</h3>
+                    <a href="#" style="color:var(--accent-primary);">Join our community</a>
+                </div>
+            </div>
+            <form id="contactForm" style="display:flex;flex-direction:column;gap:1.5rem;margin-bottom:3rem;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Name</label><input type="text" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="Your name"></div>
+                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Email</label><input type="email" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="your@email.com"></div>
+                </div>
+                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Subject</label>
+                    <select style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;">
+                        <option>General Inquiry</option>
+                        <option>Guest Writing</option>
+                        <option>Advertising</option>
+                        <option>Partnership</option>
+                        <option>Bug Report</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Message</label><textarea required rows="6" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;font-family:inherit;resize:vertical;outline:none;" placeholder="Tell us what's on your mind..."></textarea></div>
+                <button type="submit" class="btn-primary" style="align-self:flex-start;">Send Message →</button>
+            </form>
+            <div id="contactSuccess" style="display:none;padding:1.5rem;background:rgba(0,255,136,0.1);border:1px solid var(--success);border-radius:var(--border-radius-sm);color:var(--success);text-align:center;">✅ Message sent! We'll get back to you within 24-48 hours.</div>
+        </div></section>
+    </main>
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev.html">Game Dev</a><a href="/category/news.html">News</a><a href="/category/reviews.html">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about.html">About</a><a href="/contact.html">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <div class="toast-container" id="toastContainer"></div>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                this.style.display = 'none';
+                document.getElementById('contactSuccess').style.display = 'block';
+                showToast('Message sent successfully!', 'success');
+            });
+        });
+    </script>
+</body>
+</html>

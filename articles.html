@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse all articles on PixelForge - gaming news, game development stories, tutorials, reviews, and indie game coverage.">
+    <meta name="keywords" content="gaming articles, game dev blog, game news, tutorials, reviews">
+    <meta name="author" content="PixelForge Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pixelforge.blog/articles.html">
+    <meta property="og:title" content="All Articles | PixelForge">
+    <meta property="og:description" content="Browse all articles on PixelForge - gaming news, game development stories, tutorials, reviews, and indie game coverage.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pixelforge.blog/articles.html">
+    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@pixelforgeblog">
+    <title>All Articles | PixelForge - Gaming & Game Dev Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"All Articles","description":"Browse all articles on PixelForge","url":"https://pixelforge.blog/articles.html"}</script>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-grid"></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/articles.html" class="active">Articles</a></li>
+                <li><a href="/category/game-dev.html">Game Dev</a></li>
+                <li><a href="/category/news.html">News</a></li>
+                <li><a href="/category/reviews.html">Reviews</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search articles, topics, tags..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div>
+            <div class="search-tags">
+                <button class="search-tag" onclick="setSearchQuery('Game Development')">Game Development</button>
+                <button class="search-tag" onclick="setSearchQuery('Indie Games')">Indie Games</button>
+                <button class="search-tag" onclick="setSearchQuery('Unity')">Unity</button>
+                <button class="search-tag" onclick="setSearchQuery('Unreal Engine')">Unreal Engine</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bookmarksModal">
+        <div class="modal">
+            <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div>
+            <div class="modal-body" id="bookmarksList"></div>
+        </div>
+    </div>
+
+    <main>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <div class="container">
+                <ol class="breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><meta itemprop="position" content="1"><a href="/" itemprop="item"><span itemprop="name">Home</span></a></li>
+                    <li><span class="breadcrumb-separator">/</span></li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><meta itemprop="position" content="2"><span class="breadcrumb-current" itemprop="name">All Articles</span></li>
+                </ol>
+            </div>
+        </nav>
+
+        <section class="container">
+            <div class="page-header">
+                <h1>All Articles</h1>
+                <p>Explore our complete collection of gaming news, game development stories, tutorials, reviews, and indie game coverage.</p>
+            </div>
+
+            <div class="category-tabs" id="categoryTabs">
+                <button class="tab-btn active" data-category="all">🎯 All</button>
+                <button class="tab-btn" data-category="game-dev">💻 Game Dev</button>
+                <button class="tab-btn" data-category="news">📰 News</button>
+                <button class="tab-btn" data-category="reviews">⭐ Reviews</button>
+                <button class="tab-btn" data-category="tutorials">📚 Tutorials</button>
+                <button class="tab-btn" data-category="indie-games">🎮 Indie</button>
+            </div>
+
+            <div id="blogGrid" class="blog-grid"></div>
+            <div id="pagination" class="pagination"></div>
+        </section>
+
+        <section class="newsletter-section" id="newsletter">
+            <div class="newsletter-container fade-in">
+                <div class="newsletter-glow"></div>
+                <div class="newsletter-content">
+                    <div class="newsletter-icon">📬</div>
+                    <h2>Never Miss an Article</h2>
+                    <p>Subscribe to get notified when we publish new content.</p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit">Subscribe →</button>
+                    </form>
+                    <div class="newsletter-success" id="newsletterSuccess">✅ Subscribed successfully!</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a><a href="#" class="social-link">⌨</a></div></div>
+                <div class="footer-column"><h4>Categories</h4><a href="/category/game-dev.html">Game Dev</a><a href="/category/news.html">News</a><a href="/category/reviews.html">Reviews</a><a href="/category/tutorials.html">Tutorials</a><a href="/category/indie-games.html">Indie Games</a></div>
+                <div class="footer-column"><h4>Resources</h4><a href="#">Game Assets</a><a href="#">Dev Tools</a><a href="#">Community</a></div>
+                <div class="footer-column"><h4>Company</h4><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/contact.html">Write for Us</a></div>
+            </div>
+            <div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p><div class="footer-bottom-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            renderFilteredArticles();
+        });
+    </script>
+</body>
+</html>

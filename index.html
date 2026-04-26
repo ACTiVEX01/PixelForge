@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PixelForge - Your ultimate destination for gaming news, game development insights, tutorials, and deep dives into interactive entertainment.">
+    <meta name="keywords" content="gaming blog, game development, game news, indie games, game reviews">
+    <meta name="author" content="PixelForge Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pixelforge.blog/">
+    <meta property="og:title" content="PixelForge - Gaming & Game Dev Blog">
+    <meta property="og:description" content="Your ultimate destination for gaming news, game development insights, and deep dives into interactive entertainment.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pixelforge.blog/">
+    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@pixelforgeblog">
+    <title>PixelForge - Gaming & Game Development Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"PixelForge","url":"https://pixelforge.blog/","description":"Your ultimate destination for gaming news and game development insights."}</script>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-grid"></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/articles.html">Articles</a></li>
+                <li><a href="/category/game-dev.html">Game Dev</a></li>
+                <li><a href="/category/news.html">News</a></li>
+                <li><a href="/category/reviews.html">Reviews</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search articles, topics, tags..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div>
+            <div class="search-tags">
+                <button class="search-tag" onclick="setSearchQuery('Game Development')">Game Development</button>
+                <button class="search-tag" onclick="setSearchQuery('Indie Games')">Indie Games</button>
+                <button class="search-tag" onclick="setSearchQuery('Unity')">Unity</button>
+                <button class="search-tag" onclick="setSearchQuery('Unreal Engine')">Unreal Engine</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bookmarksModal">
+        <div class="modal">
+            <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div>
+            <div class="modal-body" id="bookmarksList"></div>
+        </div>
+    </div>
+
+    <main>
+        <section style="padding: 140px 2rem 80px; position: relative; overflow: hidden;">
+            <div style="position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(0,245,255,0.15),transparent 70%);pointer-events:none;"></div>
+            <div class="container" style="position:relative;z-index:1;">
+                <div style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.3);border-radius:50px;color:var(--accent-primary);font-size:0.9rem;font-weight:500;margin-bottom:1.5rem;"><span>⚡</span> New articles published weekly</div>
+                <h1 style="font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem;">Your Source for<br><span class="gradient-text">Gaming & Game Dev</span><br>Stories</h1>
+                <p style="font-size:1.25rem;color:var(--text-secondary);max-width:600px;margin-bottom:2.5rem;line-height:1.7;">Deep dives into game development, breaking industry news, honest reviews, and the stories behind your favorite games.</p>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;">
+                    <a href="/articles.html" class="btn-primary">Start Reading →</a>
+                    <a href="/category/game-dev.html" class="btn-secondary">Browse Game Dev</a>
+                </div>
+                <div style="display:flex;gap:3rem;flex-wrap:wrap;">
+                    <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--accent-primary);" id="articleCount">0</div><div style="color:var(--text-muted);font-size:0.9rem;">Articles</div></div>
+                    <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--accent-primary);">5</div><div style="color:var(--text-muted);font-size:0.9rem;">Categories</div></div>
+                    <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--accent-primary);">Weekly</div><div style="color:var(--text-muted);font-size:0.9rem;">Updates</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section style="padding:0 2rem 4rem;">
+            <div class="container">
+                <div class="section-header"><h2 class="section-title"><span class="dot"></span> Browse by Category</h2></div>
+                <div id="categoriesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;"></div>
+            </div>
+        </section>
+
+        <div id="dynamicContent"></div>
+
+        <section class="newsletter-section" id="newsletter">
+            <div class="newsletter-container fade-in">
+                <div class="newsletter-glow"></div>
+                <div class="newsletter-content">
+                    <div class="newsletter-icon">📬</div>
+                    <h2>Join the PixelForge Newsletter</h2>
+                    <p>Get the latest game dev insights, industry news, and exclusive content delivered to your inbox every week.</p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Enter your email address" required>
+                        <button type="submit">Subscribe →</button>
+                    </form>
+                    <div class="newsletter-success" id="newsletterSuccess">✅ You're in! Check your inbox for confirmation.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+                    <p>Your ultimate destination for gaming news, game development insights, and deep dives into the world of interactive entertainment.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+                        <a href="#" class="social-link" aria-label="YouTube">▶</a>
+                        <a href="#" class="social-link" aria-label="Discord">💬</a>
+                        <a href="#" class="social-link" aria-label="GitHub">⌨</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <a href="/category/game-dev.html">Game Development</a>
+                    <a href="/category/news.html">Gaming News</a>
+                    <a href="/category/reviews.html">Game Reviews</a>
+                    <a href="/category/tutorials.html">Tutorials</a>
+                    <a href="/category/indie-games.html">Indie Games</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <a href="#">Game Assets</a>
+                    <a href="#">Dev Tools</a>
+                    <a href="#">Community</a>
+                    <a href="#">Podcast</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about.html">About Us</a>
+                    <a href="/contact.html">Contact</a>
+                    <a href="/contact.html">Write for Us</a>
+                    <a href="/contact.html">Advertise</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="/privacy.html">Privacy Policy</a>
+                    <a href="/terms.html">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            document.getElementById('articleCount').textContent = articlesData.length;
+            const catGrid = document.getElementById('categoriesGrid');
+            if (catGrid) {
+                catGrid.innerHTML = categoriesData.map(cat => `<a href="/category/${cat.slug}.html" style="display:flex;align-items:center;gap:1rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);transition:var(--transition);text-decoration:none;" onmouseover="this.style.borderColor='var(--accent-primary)';this.style.transform='translateY(-5px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform=''"><span style="font-size:2rem;">${cat.icon}</span><div><h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.25rem;">${cat.name}</h3><p style="color:var(--text-muted);font-size:0.85rem;">${articlesData.filter(a => a.category === cat.id).length} articles</p></div></a>`).join('');
+            }
+            renderBlogCards(document.getElementById('dynamicContent'), articlesData, true);
+        });
+    </script>
+</body>
+</html>

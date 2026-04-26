@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about PixelForge - our mission, team, and why we're passionate about covering gaming and game development.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pixelforge.blog/about.html">
+    <meta property="og:title" content="About PixelForge">
+    <meta property="og:description" content="Learn about PixelForge - our mission to deliver quality gaming and game dev content.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pixelforge.blog/about.html">
+    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@pixelforgeblog">
+    <title>About Us | PixelForge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="bg-grid"></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li><li><a href="/articles.html">Articles</a></li><li><a href="/category/game-dev.html">Game Dev</a></li><li><a href="/category/news.html">News</a></li><li><a href="/category/reviews.html">Reviews</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
+                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
+                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">About Us</span></li></ol></div></nav>
+        <section class="container" style="padding-top:2rem;"><div style="max-width:800px;margin:0 auto;">
+            <div class="page-header"><h1>About <span class="gradient-text">PixelForge</span></h1><p>We're passionate gamers and developers dedicated to sharing the stories, insights, and news that matter in the gaming world.</p></div>
+            <div style="color:var(--text-secondary);font-size:1.1rem;line-height:1.8;margin-bottom:3rem;">
+                <h2 style="color:var(--text-primary);font-size:1.5rem;margin-bottom:1rem;">Our Mission</h2>
+                <p style="margin-bottom:1.5rem;">PixelForge was created to bridge the gap between gamers and developers. We believe that understanding how games are made deepens the appreciation for the medium. Our mission is to provide in-depth, well-researched content that informs, educates, and entertains.</p>
+                <p style="margin-bottom:1.5rem;">Whether you're an aspiring game developer looking for tutorials, a gamer wanting to stay updated on industry news, or just someone who loves reading about the creative process behind your favorite games - PixelForge is for you.</p>
+                <h2 style="color:var(--text-primary);font-size:1.5rem;margin:2rem 0 1rem;">What We Cover</h2>
+                <ul style="list-style:disc;padding-left:1.5rem;margin-bottom:1.5rem;">
+                    <li style="margin-bottom:0.5rem;"><strong>Game Development</strong> - Behind-the-scenes stories, technical deep dives, and post-mortems</li>
+                    <li style="margin-bottom:0.5rem;"><strong>Gaming News</strong> - Breaking announcements, industry trends, and analysis</li>
+                    <li style="margin-bottom:0.5rem;"><strong>Game Reviews</strong> - Honest, thorough reviews across all platforms</li>
+                    <li style="margin-bottom:0.5rem;"><strong>Tutorials</strong> - Step-by-step guides for aspiring developers</li>
+                    <li style="margin-bottom:0.5rem;"><strong>Indie Games</strong> - Spotlight on independent developers</li>
+                </ul>
+                <h2 style="color:var(--text-primary);font-size:1.5rem;margin:2rem 0 1rem;">Our Values</h2>
+                <p style="margin-bottom:1.5rem;">We believe in transparency, quality, and community. Every article is thoroughly researched and written with care. We maintain editorial independence and our reviews are always honest, never influenced by publishers.</p>
+                <h2 style="color:var(--text-primary);font-size:1.5rem;margin:2rem 0 1rem;">Get in Touch</h2>
+                <p>Have a story idea, want to contribute, or just want to say hello? We'd love to hear from you.</p>
+                <a href="/contact.html" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Contact Us →</a>
+            </div>
+        </div></section>
+        <section class="newsletter-section" id="newsletter"><div class="newsletter-container fade-in"><div class="newsletter-glow"></div><div class="newsletter-content"><div class="newsletter-icon">📬</div><h2>Join Our Community</h2><p>Subscribe to stay updated with our latest articles.</p><form class="newsletter-form" id="newsletterForm"><input type="email" placeholder="Enter your email" required><button type="submit">Subscribe →</button></form><div class="newsletter-success" id="newsletterSuccess">✅ Subscribed!</div></div></div></section>
+    </main>
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev.html">Game Dev</a><a href="/category/news.html">News</a><a href="/category/reviews.html">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about.html">About</a><a href="/contact.html">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="/assets/js/main.js"></script>
+    <script>document.addEventListener('DOMContentLoaded',()=>{document.getElementById('currentYear').textContent=new Date().getFullYear();});</script>
+</body>
+</html>

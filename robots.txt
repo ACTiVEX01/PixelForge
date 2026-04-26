@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://pixelforge.blog/sitemap.xml
+
+# Disallow admin/private areas if any
+Disallow: /admin/
+Disallow: /private/
+Disallow: /drafts/
