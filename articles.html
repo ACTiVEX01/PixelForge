@@ -102,7 +102,7 @@
                     <h2>Never Miss an Article</h2>
                     <p>Subscribe to get notified when we publish new content.</p>
                     <form class="newsletter-form" id="newsletterForm">
-                        <input type="email" placeholder="Enter your email" required>
+                        <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" required aria-label="Email address">
                         <button type="submit">Subscribe →</button>
                     </form>
                     <div class="newsletter-success" id="newsletterSuccess">✅ Subscribed successfully!</div>
@@ -128,14 +128,9 @@
  
     <script src="/assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            state.currentFilter = 'all';
-            state.currentPage = 1;
-            initFilters();
-            initNewsletter();
-            const grid = document.getElementById('blogGrid');
-            if (grid) await loadPosts(grid, false);
+            renderFilteredArticles();
         });
     </script>
 </body>
