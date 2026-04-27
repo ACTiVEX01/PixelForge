@@ -35,7 +35,7 @@
             </div>
         </div>
     </nav>
-
+ 
     <div class="search-overlay" id="searchOverlay">
         <div class="search-container">
             <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div>
@@ -43,14 +43,14 @@
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
-
+ 
     <div class="modal-overlay" id="bookmarksModal">
         <div class="modal">
             <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div>
             <div class="modal-body" id="bookmarksList"></div>
         </div>
     </div>
-
+ 
     <main>
         <article class="content-width" style="padding: 120px 2rem 4rem; margin: 0 auto;">
             <nav class="breadcrumb" aria-label="Breadcrumb" style="padding: 0 0 2rem;">
@@ -62,7 +62,7 @@
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><meta itemprop="position" content="3"><span class="breadcrumb-current" id="articleBreadcrumb">Article</span></li>
                 </ol>
             </nav>
-
+ 
             <a href="/articles.html" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--text-secondary);margin-bottom:2rem;font-weight:500;transition:var(--transition);" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-secondary)'">← Back to Articles</a>
             
             <header class="article-header">
@@ -86,17 +86,17 @@
                     </div>
                 </div>
             </header>
-
+ 
             <div id="articleImage" style="width:100%;border-radius:var(--border-radius);margin-bottom:3rem;overflow:hidden;">
                 <img src="" alt="" style="width:100%;object-fit:cover;">
             </div>
-
+ 
             <div class="article-content" id="articleContent">
                 <!-- Article content goes here -->
             </div>
-
+ 
             <div class="article-tags" id="articleTags"></div>
-
+ 
             <div class="reactions" id="reactions">
                 <button class="reaction-btn">🔥 <span>0</span></button>
                 <button class="reaction-btn">👏 <span>0</span></button>
@@ -104,16 +104,16 @@
                 <button class="reaction-btn">💡 <span>0</span></button>
                 <button class="reaction-btn">❤️ <span>0</span></button>
             </div>
-
+ 
             <section class="related-posts" style="margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border-color);">
                 <h2 class="section-title"><span class="dot"></span> Related Articles</h2>
                 <div id="relatedGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem;"></div>
             </section>
-
+ 
             <section class="comments-section">
                 <h2 class="section-title"><span class="dot"></span> Comments</h2>
                 <form class="comment-form" id="commentForm" style="margin-top:1.5rem;">
-                    <textarea placeholder="Share your thoughts... Be respectful and constructive."></textarea>
+                    <textarea id="commentText" name="comment" autocomplete="off" placeholder="Share your thoughts... Be respectful and constructive."></textarea>
                     <div class="comment-form-actions">
                         <button class="btn-primary" type="submit">Post Comment</button>
                     </div>
@@ -122,7 +122,7 @@
             </section>
         </article>
     </main>
-
+ 
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -133,101 +133,84 @@
             <div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div>
         </div>
     </footer>
-
+ 
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <div class="toast-container" id="toastContainer"></div>
-
+ 
     <script src="/assets/js/main.js"></script>
     <script>
-        // ARTICLE TEMPLATE - Replace the slug below with your article slug
-        const articleSlug = 'your-article-slug';
-        const article = articlesData.find(a => a.slug === articleSlug);
-
-        if (article) {
-            // Set SEO
-            document.title = article.title + ' | PixelForge';
-            const desc = document.querySelector('meta[name="description"]');
-            if (desc) desc.setAttribute('content', article.excerpt);
-            
-            document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://pixelforge.blog/article/' + article.slug + '.html');
-
-            // Set Open Graph
-            const setMeta = (prop, content) => {
-                let el = document.querySelector('meta[property="' + prop + '"]');
-                if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
-                el.setAttribute('content', content);
-            };
-            setMeta('og:title', article.title);
-            setMeta('og:description', article.excerpt);
-            setMeta('og:url', 'https://pixelforge.blog/article/' + article.slug + '.html');
-            if (article.image) setMeta('og:image', article.image);
-
-            // Set content
-            document.getElementById('articleCategory').textContent = getCategoryName(article.category);
-            document.getElementById('articleTitle').textContent = article.title;
-            document.getElementById('articleAuthor').textContent = article.author;
-            document.getElementById('articleAuthorImg').src = article.authorImg;
-            document.getElementById('articleAuthorImg').alt = article.author;
-            document.getElementById('articleDate').textContent = article.date + ' • ' + article.readTime + ' read';
-            document.getElementById('articleViews').textContent = article.views || '0';
-            document.getElementById('articleBreadcrumb').textContent = article.title;
-            
-            const imgContainer = document.getElementById('articleImage');
-            const img = imgContainer.querySelector('img');
-            img.src = article.image;
-            img.alt = article.title;
-
-            document.getElementById('articleContent').innerHTML = article.content || '<p>Article content coming soon.</p>';
-
-            // Tags
-            document.getElementById('articleTags').innerHTML = (article.tags || []).map(t => '<a href="/articles.html" class="article-tag">#' + t + '</a>').join('');
-
-            // Related articles
-            const related = articlesData.filter(a => a.id !== article.id && a.category === article.category).slice(0, 3);
-            if (related.length === 0) {
-                const others = articlesData.filter(a => a.id !== article.id).slice(0, 3);
-                others.forEach(a => {
-                    document.getElementById('relatedGrid').innerHTML += '<a href="/article/' + a.slug + '.html" class="bookmark-item"><img src="' + a.image + '" alt="' + a.title + '"><div><h4>' + a.title + '</h4><p>' + a.readTime + ' read</p></div></a>';
-                });
-            } else {
-                related.forEach(a => {
-                    document.getElementById('relatedGrid').innerHTML += '<a href="/article/' + a.slug + '.html" class="bookmark-item"><img src="' + a.image + '" alt="' + a.title + '"><div><h4>' + a.title + '</h4><p>' + a.readTime + ' read</p></div></a>';
-                });
-            }
-
-            // JSON-LD
-            const jsonLd = document.createElement('script');
-            jsonLd.type = 'application/ld+json';
-            jsonLd.textContent = JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "BlogPosting",
-                "headline": article.title,
-                "description": article.excerpt,
-                "image": article.image,
-                "author": { "@type": "Person", "name": article.author },
-                "publisher": { "@type": "Organization", "name": "PixelForge" },
-                "datePublished": article.date,
-                "mainEntityOfPage": { "@type": "WebPage", "@id": "https://pixelforge.blog/article/" + article.slug + ".html" }
-            });
-            document.head.appendChild(jsonLd);
-
-            // Bookmark button
-            if (isBookmarked(article.id)) {
-                const bookmarkBtn = document.createElement('button');
-                bookmarkBtn.className = 'btn-primary';
-                bookmarkBtn.innerHTML = '★ Bookmarked';
-                bookmarkBtn.style.marginTop = '2rem';
-                bookmarkBtn.onclick = function() { toggleBookmark(article.id); this.innerHTML = isBookmarked(article.id) ? '★ Bookmarked' : '☆ Bookmark'; };
-                document.getElementById('reactions').after(bookmarkBtn);
-            }
-        } else {
-            document.getElementById('articleContent').innerHTML = '<h2>Article not found</h2><p>The article you are looking for does not exist.</p><a href="/articles.html" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Browse All Articles</a>';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
+        // PixelForge Article Page — populated via API
+        // The slug is read from the URL path automatically
+        document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            initReactions();
-            initComments();
+            const slug = window.location.pathname.replace(/\/article\//, '').replace(/\.html$/, '').replace(/\/$/, '');
+            if (!slug || slug === 'TEMPLATE') return;
+ 
+            try {
+                const d = await api('get_post', { slug });
+                if (!d.post || d.error) {
+                    document.getElementById('articleContent').innerHTML = '<h2>Article not found</h2><p>The article you are looking for does not exist.</p><a href="/articles" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Browse Articles</a>';
+                    return;
+                }
+                const p = d.post;
+                window.postId = p.id;
+ 
+                // SEO
+                document.title = (p.seo_title || p.title) + ' | PixelForge';
+                let meta = document.querySelector('meta[name="description"]');
+                if (!meta) { meta = document.createElement('meta'); meta.name = 'description'; document.head.appendChild(meta); }
+                meta.setAttribute('content', p.meta_description || p.excerpt || '');
+ 
+                const setMeta = (prop, val) => {
+                    let el = document.querySelector('meta[property="' + prop + '"]');
+                    if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+                    el.setAttribute('content', val);
+                };
+                setMeta('og:title', p.seo_title || p.title);
+                setMeta('og:description', p.meta_description || p.excerpt || '');
+                setMeta('og:url', window.location.href);
+                if (p.featured_image) setMeta('og:image', p.featured_image);
+ 
+                // JSON-LD
+                const ld = document.createElement('script');
+                ld.type = 'application/ld+json';
+                ld.textContent = JSON.stringify({"@context":"https://schema.org","@type":"BlogPosting","headline":p.title,"description":p.excerpt,"image":p.featured_image,"author":{"@type":"Person","name":p.author_name},"datePublished":p.published_at,"mainEntityOfPage":{"@type":"WebPage","@id":window.location.href}});
+                document.head.appendChild(ld);
+ 
+                // Content
+                document.getElementById('articleBreadcrumb').textContent = p.title;
+                document.getElementById('articleCategory').textContent   = p.category.replace('-',' ').toUpperCase();
+                document.getElementById('articleTitle').textContent       = p.title;
+                document.getElementById('articleAuthor').textContent      = p.author_name || 'Staff';
+                document.getElementById('articleAuthorImg').src           = p.author_avatar || '';
+                document.getElementById('articleAuthorImg').alt           = p.author_name || '';
+                document.getElementById('articleDate').textContent        = (p.published_at ? new Date(p.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '') + ' • ' + Math.ceil((p.content||'').split(' ').length/200) + ' min read';
+                document.getElementById('articleViews').textContent       = p.views || 0;
+ 
+                const imgWrap = document.getElementById('articleImage');
+                if (p.featured_image) { imgWrap.querySelector('img').src = p.featured_image; imgWrap.querySelector('img').alt = p.title; }
+                else imgWrap.style.display = 'none';
+ 
+                document.getElementById('articleContent').innerHTML = p.content || '<p>Content coming soon.</p>';
+                document.getElementById('articleTags').innerHTML    = (p.tags||'').split(',').filter(t=>t.trim()).map(t=>'<a href="/articles" class="article-tag">#'+t.trim()+'</a>').join('');
+ 
+                // Related
+                const rg = document.getElementById('relatedGrid');
+                if (p.related && p.related.length && rg) {
+                    rg.innerHTML = p.related.map(r=>`<a href="/article/${r.slug}" class="bookmark-item"><img src="${r.featured_image||''}" alt="${r.title}"><div><h4>${r.title}</h4><p>${r.published_at?new Date(r.published_at).toLocaleDateString():''}</p></div></a>`).join('');
+                }
+ 
+                // Comments
+                const cl = document.getElementById('commentList');
+                if (p.comments && p.comments.length && cl) {
+                    cl.innerHTML = p.comments.map(c=>`<div class="comment-item"><div class="comment-content"><div class="comment-header"><span class="comment-author">${c.author_name}</span><span class="comment-date">${new Date(c.created_at).toLocaleDateString()}</span></div><p class="comment-text">${c.content}</p></div></div>`).join('');
+                }
+ 
+                initReactions();
+                initComments();
+            } catch(e) {
+                document.getElementById('articleContent').innerHTML = '<h2>Error loading article</h2><a href="/articles" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Browse Articles</a>';
+            }
         });
     </script>
 </body>
