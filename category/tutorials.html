@@ -51,12 +51,12 @@
     <div class="toast-container" id="toastContainer"></div>
     <script src="/assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            const filtered = articlesData.filter(a => a.category === 'tutorials');
-            document.getElementById('blogGrid').innerHTML = renderCardsGrid(filtered.slice(0, state.articlesPerPage));
-            renderPagination(filtered.length);
-            setTimeout(() => document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible')), 100);
+            state.currentFilter = 'tutorials';
+            state.currentPage = 1;
+            const grid = document.getElementById('blogGrid');
+            if (grid) await loadPosts(grid, false);
         });
     </script>
 </body>
