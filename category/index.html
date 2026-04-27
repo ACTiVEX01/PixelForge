@@ -33,7 +33,7 @@
     </nav>
     <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
     <div class="modal-overlay" id="bookmarksModal"><div class="modal"><div class="modal-header"><h3>🔖 Saved</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div><div class="modal-body" id="bookmarksList"></div></div></div>
-
+ 
     <main>
         <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><a href="/articles">Articles</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current" id="breadcrumbCat">Category</span></li></ol></div></nav>
         <section class="container">
@@ -42,66 +42,25 @@
             <div id="pagination" class="pagination"></div>
         </section>
     </main>
-
+ 
     <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <div class="toast-container" id="toastContainer"></div>
-
-    <script>const API_URL='https://blockmines.page.gd/api';</script>
+ 
     <script src="/assets/js/main.js"></script>
     <script>
-    const cats = {
-        'game-dev': {name:'Game Development',icon:'💻',desc:'Behind-the-scenes stories, technical deep dives, and tutorials from game developers.'},
-        'news': {name:'Gaming News',icon:'📰',desc:'Breaking news, announcements, and updates from the gaming industry.'},
-        'reviews': {name:'Game Reviews',icon:'⭐',desc:'Honest, in-depth reviews of the latest games across all platforms.'},
-        'tutorials': {name:'Tutorials',icon:'📚',desc:'Step-by-step guides and educational content for aspiring game developers.'},
-        'indie-games': {name:'Indie Games',icon:'🎮',desc:'Spotlight on independent games and the developers who create them.'}
-    };
-    
-    document.addEventListener('DOMContentLoaded', async () => {
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-        const slug = window.location.pathname.split('/').pop();
-        const cat = cats[slug];
-        if (!cat) { document.getElementById('blogGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;"><h2>Category not found</h2></div>'; return; }
-        
-        document.getElementById('categoryTitle').textContent = cat.icon + ' ' + cat.name;
-        document.getElementById('categoryDesc').textContent = cat.desc;
-        document.getElementById('breadcrumbCat').textContent = cat.name;
-        document.title = cat.name + ' | PixelForge';
-        
-        await loadCatArticles(slug);
-    });
-    
-    async function loadCatArticles(cat, page=1) {
-        const url = new URL(API_URL + '/index.php');
-        url.searchParams.set('action', 'get_posts');
-        url.searchParams.set('category', cat);
-        url.searchParams.set('page', page);
-        try {
-            const r = await fetch(url);
-            const d = await r.json();
-            const grid = document.getElementById('blogGrid');
-            if (d.posts && d.posts.length) {
-                grid.innerHTML = d.posts.map(p => `<article class="blog-card fade-in"><div class="card-image"><a href="/article/${p.slug}"><img src="${p.featured_image||''}" alt="${p.title}" loading="lazy"></a></div><div class="card-body"><div class="card-tags"><span class="category-badge ${p.category}">${p.category.replace('-',' ').toUpperCase()}</span></div><h3><a href="/article/${p.slug}">${p.title}</a></h3><p class="card-excerpt">${p.excerpt||''}</p><div class="card-footer"><div class="card-author"><div class="card-author-info"><div class="card-author-name">${p.author_name||'Staff'}</div><div class="card-author-date">${p.published_at?new Date(p.published_at).toLocaleDateString():''}</div></div></div><div class="card-stats"><span class="card-stat">👁️ ${p.views||0}</span></div></div></div></article>`).join('');
-                renderCatPagination(d.pages || 1, cat);
-                setTimeout(() => grid.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible')), 100);
-            } else {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)"><h3>No articles in this category yet</h3></div>';
-            }
-        } catch(e) {
-            document.getElementById('blogGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;"><h3>Error loading articles</h3></div>';
-        }
-    }
-    
-    function renderCatPagination(pages, cat) {
-        const c = document.getElementById('pagination');
-        if (!c || pages <= 1) { if(c) c.innerHTML=''; return; }
-        let h = '';
-        h += `<button class="pagination-btn" onclick="loadCatArticles('${cat}',${parseInt(this.dataset?.page||1)-1})" >←</button>`;
-        for(let i=1;i<=pages;i++) h += `<button class="pagination-btn" onclick="loadCatArticles('${cat}',${i})">${i}</button>`;
-        h += `<button class="pagination-btn" onclick="loadCatArticles('${cat}',${pages})">→</button>`;
-        c.innerHTML = h;
-    }
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            // Load category counts from API
+            const d = await api('get_categories');
+            const catMap = {};
+            if (d.categories) d.categories.forEach(c => catMap[c.category] = c.count);
+            // Update count badges if they exist on this page
+            document.querySelectorAll('[data-category-count]').forEach(el => {
+                const cat = el.dataset.categoryCount;
+                if (catMap[cat] !== undefined) el.textContent = catMap[cat] + ' articles';
+            });
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26ecf1be7bf655',t:'MTc3NzIyMDUzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
