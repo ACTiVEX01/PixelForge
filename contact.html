@@ -54,11 +54,11 @@
             </div>
             <form id="contactForm" style="display:flex;flex-direction:column;gap:1.5rem;margin-bottom:3rem;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Name</label><input type="text" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="Your name"></div>
-                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Email</label><input type="email" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="your@email.com"></div>
+                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Name</label><input type="text" id="contactName" name="name" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="Your name" autocomplete="name"></div>
+                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Email</label><input type="email" id="contactEmail" name="email" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="your@email.com" autocomplete="email"></div>
                 </div>
                 <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Subject</label>
-                    <select style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;">
+                    <select id="contactSubject" name="subject" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;">
                         <option>General Inquiry</option>
                         <option>Guest Writing</option>
                         <option>Advertising</option>
@@ -67,7 +67,7 @@
                         <option>Other</option>
                     </select>
                 </div>
-                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Message</label><textarea required rows="6" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;font-family:inherit;resize:vertical;outline:none;" placeholder="Tell us what's on your mind..."></textarea></div>
+                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Message</label><textarea id="contactMessage" name="message" required rows="6" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;font-family:inherit;resize:vertical;outline:none;" placeholder="Tell us what's on your mind..."></textarea></div>
                 <button type="submit" class="btn-primary" style="align-self:flex-start;">Send Message →</button>
             </form>
             <div id="contactSuccess" style="display:none;padding:1.5rem;background:rgba(0,255,136,0.1);border:1px solid var(--success);border-radius:var(--border-radius-sm);color:var(--success);text-align:center;">✅ Message sent! We'll get back to you within 24-48 hours.</div>
