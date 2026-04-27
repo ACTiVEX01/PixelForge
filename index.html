@@ -43,7 +43,7 @@
             </div>
         </div>
     </nav>
-
+ 
     <div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Search">
         <div class="search-container">
             <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search articles, topics, tags..." oninput="handleSearch(this.value)" aria-label="Search"><button class="search-close" onclick="toggleSearch()" aria-label="Close">✕</button></div>
@@ -55,14 +55,14 @@
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
-
+ 
     <div class="modal-overlay" id="bookmarksModal" role="dialog" aria-label="Bookmarks">
         <div class="modal">
             <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()" aria-label="Close">✕</button></div>
             <div class="modal-body" id="bookmarksList"></div>
         </div>
     </div>
-
+ 
     <main>
         <section style="padding:140px 2rem 80px;position:relative;overflow:hidden;">
             <div style="position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(0,245,255,0.15),transparent 70%);pointer-events:none;"></div>
@@ -81,16 +81,16 @@
                 </div>
             </div>
         </section>
-
+ 
         <section style="padding:0 2rem 4rem;">
             <div class="container">
                 <div class="section-header"><h2 class="section-title"><span class="dot"></span> Browse by Category</h2></div>
                 <div id="categoriesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;"></div>
             </div>
         </section>
-
+ 
         <div id="dynamicContent"></div>
-
+ 
         <section class="newsletter-section" id="newsletter">
             <div class="newsletter-container fade-in">
                 <div class="newsletter-glow"></div>
@@ -107,7 +107,7 @@
             </div>
         </section>
     </main>
-
+ 
     <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-grid">
@@ -152,15 +152,10 @@
             </div>
         </div>
     </footer>
-
+ 
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top">↑</button>
     <div class="toast-container" id="toastContainer"></div>
-
-    <script>
-    // ===== CONFIG - CHANGE THIS TO YOUR INFINITYFREE DOMAIN =====
-    const API_URL = 'https://blockmines.page.gd/api';
-    // ============================================================
-    </script>
+ 
     <script src="/assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
@@ -179,10 +174,7 @@
             
             if (catGrid) {
                 try {
-                    const url = new URL(API_URL + '/index.php');
-                    url.searchParams.set('action', 'get_categories');
-                    const r = await fetch(url);
-                    const d = await r.json();
+                    const d = await api('get_categories');
                     if (d.categories) {
                         const catMap = {};
                         d.categories.forEach(c => catMap[c.category] = c.count);
@@ -195,11 +187,7 @@
             
             // Load posts
             try {
-                const url = new URL(API_URL + '/index.php');
-                url.searchParams.set('action', 'get_posts');
-                url.searchParams.set('page', '1');
-                const r = await fetch(url);
-                const d = await r.json();
+                const d = await api('get_posts', { page: '1' });
                 if (d.posts && d.posts.length) {
                     countEl.textContent = d.total || d.posts.length;
                     const container = document.getElementById('dynamicContent');
@@ -218,5 +206,5 @@
             return `<article class="blog-card fade-in"><div class="card-image"><a href="/article/${p.slug}"><img src="${p.featured_image||''}" alt="${p.title}" loading="lazy"></a><div class="card-actions"><button class="card-action-btn" onclick="event.preventDefault();toggleBookmark('${p.slug}')" title="Bookmark">☆</button></div></div><div class="card-body"><div class="card-tags"><span class="category-badge ${p.category}">${p.category.replace('-',' ').toUpperCase()}</span></div><h3><a href="/article/${p.slug}">${p.title}</a></h3><p class="card-excerpt">${p.excerpt||''}</p><div class="card-footer"><div class="card-author"><div class="card-author-info"><div class="card-author-name">${p.author_name||'Staff'}</div><div class="card-author-date">${p.published_at?new Date(p.published_at).toLocaleDateString():''}</div></div></div><div class="card-stats"><span class="card-stat">👁️ ${p.views||0}</span></div></div></div></article>`;
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26e37a5ee928cd',t:'MTc3NzIyMDE1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
