@@ -128,9 +128,14 @@
  
     <script src="/assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            renderFilteredArticles();
+            state.currentFilter = 'all';
+            state.currentPage = 1;
+            initFilters();
+            initNewsletter();
+            const grid = document.getElementById('blogGrid');
+            if (grid) await loadPosts(grid, false);
         });
     </script>
 </body>
