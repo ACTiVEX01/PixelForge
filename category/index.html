@@ -51,11 +51,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            // Load category counts from API
             const d = await api('get_categories');
             const catMap = {};
             if (d.categories) d.categories.forEach(c => catMap[c.category] = c.count);
-            // Update count badges if they exist on this page
             document.querySelectorAll('[data-category-count]').forEach(el => {
                 const cat = el.dataset.categoryCount;
                 if (catMap[cat] !== undefined) el.textContent = catMap[cat] + ' articles';
