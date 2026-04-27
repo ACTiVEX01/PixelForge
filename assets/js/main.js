@@ -1,4 +1,8 @@
-const siteConfig = {name:"PixelForge",url:window.location.origin,apiUrl:window.location.origin+"/api"};
+const siteConfig = {
+  name: "PixelForge",
+  url: window.location.origin,
+  apiUrl: "https://blockmines.page.gd/api"
+};
 let state = {bookmarks:JSON.parse(localStorage.getItem('pf-bookmarks'))||[],currentFilter:'all',currentPage:1,articlesPerPage:9,cachedPosts:[],cachedSettings:{}};
 const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 
