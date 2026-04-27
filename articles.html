@@ -43,7 +43,7 @@
             </div>
         </div>
     </nav>
-
+ 
     <div class="search-overlay" id="searchOverlay">
         <div class="search-container">
             <div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search articles, topics, tags..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div>
@@ -56,14 +56,14 @@
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
-
+ 
     <div class="modal-overlay" id="bookmarksModal">
         <div class="modal">
             <div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div>
             <div class="modal-body" id="bookmarksList"></div>
         </div>
     </div>
-
+ 
     <main>
         <nav class="breadcrumb" aria-label="Breadcrumb">
             <div class="container">
@@ -74,13 +74,13 @@
                 </ol>
             </div>
         </nav>
-
+ 
         <section class="container">
             <div class="page-header">
                 <h1>All Articles</h1>
                 <p>Explore our complete collection of gaming news, game development stories, tutorials, reviews, and indie game coverage.</p>
             </div>
-
+ 
             <div class="category-tabs" id="categoryTabs">
                 <button class="tab-btn active" data-category="all">🎯 All</button>
                 <button class="tab-btn" data-category="game-dev">💻 Game Dev</button>
@@ -89,11 +89,11 @@
                 <button class="tab-btn" data-category="tutorials">📚 Tutorials</button>
                 <button class="tab-btn" data-category="indie-games">🎮 Indie</button>
             </div>
-
+ 
             <div id="blogGrid" class="blog-grid"></div>
             <div id="pagination" class="pagination"></div>
         </section>
-
+ 
         <section class="newsletter-section" id="newsletter">
             <div class="newsletter-container fade-in">
                 <div class="newsletter-glow"></div>
@@ -110,7 +110,7 @@
             </div>
         </section>
     </main>
-
+ 
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -122,15 +122,20 @@
             <div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p><div class="footer-bottom-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div>
         </div>
     </footer>
-
+ 
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <div class="toast-container" id="toastContainer"></div>
-
+ 
     <script src="/assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
-            renderFilteredArticles();
+            state.currentFilter = 'all';
+            state.currentPage = 1;
+            initFilters();
+            initNewsletter();
+            const grid = document.getElementById('blogGrid');
+            if (grid) await loadPosts(grid, false);
         });
     </script>
 </body>
