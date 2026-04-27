@@ -99,7 +99,7 @@
                     <h2>Join the PixelForge Newsletter</h2>
                     <p>Get the latest game dev insights, industry news, and exclusive content delivered to your inbox every week.</p>
                     <form class="newsletter-form" id="newsletterForm">
-                        <input type="email" placeholder="Enter your email address" required aria-label="Email address">
+                        <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email address" required aria-label="Email address">
                         <button type="submit">Subscribe →</button>
                     </form>
                     <div class="newsletter-success" id="newsletterSuccess">✅ You're in! Check your inbox for confirmation.</div>
@@ -174,7 +174,10 @@
             
             if (catGrid) {
                 try {
-                    const d = await api('get_categories');
+                    const url = new URL(API_URL + '/index.php');
+                    url.searchParams.set('action', 'get_categories');
+                    const r = await fetch(url);
+                    const d = await r.json();
                     if (d.categories) {
                         const catMap = {};
                         d.categories.forEach(c => catMap[c.category] = c.count);
@@ -187,7 +190,11 @@
             
             // Load posts
             try {
-                const d = await api('get_posts', { page: '1' });
+                const url = new URL(API_URL + '/index.php');
+                url.searchParams.set('action', 'get_posts');
+                url.searchParams.set('page', '1');
+                const r = await fetch(url);
+                const d = await r.json();
                 if (d.posts && d.posts.length) {
                     countEl.textContent = d.total || d.posts.length;
                     const container = document.getElementById('dynamicContent');
