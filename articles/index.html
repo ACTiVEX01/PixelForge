@@ -53,7 +53,7 @@
             <div id="blogGrid" class="blog-grid"></div>
             <div id="pagination" class="pagination"></div>
         </section>
-        <section class="newsletter-section" id="newsletter"><div class="newsletter-container fade-in"><div class="newsletter-glow"></div><div class="newsletter-content"><div class="newsletter-icon">📬</div><h2>Never Miss an Article</h2><p>Subscribe to get notified when we publish new content.</p><form class="newsletter-form" id="newsletterForm"><input type="email" placeholder="Enter your email" required><button type="submit">Subscribe →</button></form><div class="newsletter-success" id="newsletterSuccess">✅ Subscribed!</div></div></div></section>
+        <section class="newsletter-section" id="newsletter"><div class="newsletter-container fade-in"><div class="newsletter-glow"></div><div class="newsletter-content"><div class="newsletter-icon">📬</div><h2>Never Miss an Article</h2><p>Subscribe to get notified when we publish new content.</p><form class="newsletter-form" id="newsletterForm"><input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" required aria-label="Email address"><button type="submit">Subscribe →</button></form><div class="newsletter-success" id="newsletterSuccess">✅ Subscribed!</div></div></div></section>
     </main>
  
     <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
@@ -61,18 +61,72 @@
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <div class="toast-container" id="toastContainer"></div>
  
+    <script>const API_URL='https://blockmines.page.gd/api';</script>
     <script src="/assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            state.currentFilter = 'all';
-            state.currentPage = 1;
-            initFilters();
-            initNewsletter();
-            const grid = document.getElementById('blogGrid');
-            if (grid) await loadPosts(grid, false);
+    document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Init filters
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                state.currentFilter = btn.dataset.category || 'all';
+                state.currentPage = 1;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                await loadArticles();
+            });
         });
+        
+        await loadArticles();
+    });
+    
+    async function loadArticles() {
+        const url = new URL(API_URL + '/index.php');
+        url.searchParams.set('action', 'get_posts');
+        if (state.currentFilter !== 'all') url.searchParams.set('category', state.currentFilter);
+        url.searchParams.set('page', state.currentPage);
+        
+        try {
+            const r = await fetch(url);
+            const d = await r.json();
+            const grid = document.getElementById('blogGrid');
+            if (d.posts && d.posts.length) {
+                grid.innerHTML = d.posts.map(p => renderCard(p)).join('');
+                state.cachedPages = d.pages || 1;
+                renderPagination(state.cachedPages);
+                setTimeout(() => grid.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible')), 100);
+            } else {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)"><h3>No articles yet</h3></div>';
+                document.getElementById('pagination').innerHTML = '';
+            }
+        } catch(e) {
+            document.getElementById('blogGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;"><h3>Unable to load articles</h3></div>';
+        }
+    }
+    
+    function renderCard(p) {
+        return `<article class="blog-card fade-in"><div class="card-image"><a href="/article/${p.slug}"><img src="${p.featured_image||''}" alt="${p.title}" loading="lazy"></a><div class="card-actions"><button class="card-action-btn" onclick="event.preventDefault();toggleBookmark('${p.slug}')" title="Bookmark">☆</button><button class="card-action-btn" onclick="event.preventDefault();shareArticle('${p.title.replace(/'/g,"\\'")}')" title="Share">↗</button></div></div><div class="card-body"><div class="card-tags"><span class="category-badge ${p.category}">${p.category.replace('-',' ').toUpperCase()}</span>${(p.tags||'').split(',').filter(t=>t.trim()).slice(0,2).map(t=>'<span class="card-tag">'+t.trim()+'</span>').join('')}</div><h3><a href="/article/${p.slug}">${p.title}</a></h3><p class="card-excerpt">${p.excerpt||''}</p><div class="card-footer"><div class="card-author"><div class="card-author-info"><div class="card-author-name">${p.author_name||'Staff'}</div><div class="card-author-date">${p.published_at?new Date(p.published_at).toLocaleDateString():''}</div></div></div><div class="card-stats"><span class="card-stat">👁️ ${p.views||0}</span></div></div></div></article>`;
+    }
+    
+    function renderPagination(pages) {
+        const c = document.getElementById('pagination');
+        if (!c || pages <= 1) { if(c) c.innerHTML = ''; return; }
+        let h = '';
+        h += `<button class="pagination-btn" onclick="goTo(${state.currentPage-1})" ${state.currentPage===1?'disabled':''}>←</button>`;
+        for(let i=1;i<=pages;i++) h += `<button class="pagination-btn ${i===state.currentPage?'active':''}" onclick="goTo(${i})">${i}</button>`;
+        h += `<button class="pagination-btn" onclick="goTo(${state.currentPage+1})" ${state.currentPage===pages?'disabled':''}>→</button>`;
+        c.innerHTML = h;
+    }
+    
+    async function goTo(p) {
+        const c = state.cachedPages || 1;
+        if (p < 1 || p > c) return;
+        state.currentPage = p;
+        await loadArticles();
+        window.scrollTo({top: document.getElementById('blogGrid')?.offsetTop - 100 || 0, behavior: 'smooth'});
+    }
     </script>
 </body>
 </html>
- 
