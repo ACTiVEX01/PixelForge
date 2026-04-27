@@ -29,33 +29,28 @@
             </div>
         </div>
     </nav>
-
+ 
     <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
     <div class="modal-overlay" id="bookmarksModal"><div class="modal"><div class="modal-header"><h3>🔖 Saved</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div><div class="modal-body" id="bookmarksList"></div></div></div>
-
+ 
     <main id="articleMain" style="min-height:80vh;display:flex;align-items:center;justify-content:center;">
         <div style="text-align:center;color:var(--text-muted);">Loading article...</div>
     </main>
-
+ 
     <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
-
+ 
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <div class="toast-container" id="toastContainer"></div>
-
-    <script>const API_URL='https://blockmines.page.gd/api';</script>
+ 
     <script src="/assets/js/main.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('currentYear').textContent = new Date().getFullYear();
         const slug = window.location.pathname.split('/').pop();
         if (!slug) return;
-
+ 
         try {
-            const url = new URL(API_URL + '/index.php');
-            url.searchParams.set('action', 'get_post');
-            url.searchParams.set('slug', slug);
-            const r = await fetch(url);
-            const d = await r.json();
+            const d = await api('get_post', { slug });
             
             if (!d.post || d.error) {
                 document.getElementById('articleMain').innerHTML = '<div style="text-align:center;padding:4rem;"><h2>Article not found</h2><a href="/articles" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Browse Articles</a></div>';
@@ -126,7 +121,7 @@
                 ${p.related && p.related.length ? `<section style="margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border-color);"><h2 class="section-title"><span class="dot"></span> Related Articles</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem;">${p.related.map(r=>`<a href="/article/${r.slug}" class="bookmark-item"><img src="${r.featured_image||''}" alt="${r.title}"><div><h4>${r.title}</h4><p>${r.published_at?new Date(r.published_at).toLocaleDateString():''}</p></div></a>`).join('')}</div></section>` : ''}
                 <section class="comments-section">
                     <h2 class="section-title"><span class="dot"></span> Comments</h2>
-                    <form class="comment-form" id="commentForm" style="margin-top:1.5rem;"><textarea placeholder="Share your thoughts..." required></textarea><div class="comment-form-actions"><button class="btn-primary" type="submit">Post Comment</button></div></form>
+                    <form class="comment-form" id="commentForm" style="margin-top:1.5rem;"><textarea id="commentText" name="comment" placeholder="Share your thoughts..." required></textarea><div class="comment-form-actions"><button class="btn-primary" type="submit">Post Comment</button></div></form>
                     <div class="comment-list">${(p.comments||[]).map(c=>`<div class="comment-item"><div class="comment-content"><div class="comment-header"><span class="comment-author">${c.author_name}</span><span class="comment-date">${new Date(c.created_at).toLocaleDateString()}</span></div><p class="comment-text">${c.content}</p></div></div>`).join('')}</div>
                 </section>
             </article>`;
@@ -138,5 +133,5 @@
         }
     });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26eb349982f655',t:'MTc3NzIyMDQ2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
