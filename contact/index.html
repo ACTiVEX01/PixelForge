@@ -44,7 +44,7 @@
                 <div style="padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">📧</div>
                     <h3 style="margin-bottom:0.5rem;">Email</h3>
-                    <a href="/cdn-cgi/l/email-protection#e8808d848487a89881908d848e879a8f8dc68a84878f" style="color:var(--accent-primary);"><span class="__cf_email__" data-cfemail="7a121f1616153a0a13021f161c15081d1f541816151d">[email&#160;protected]</span></a>
+                    <a href="mailto:hello@pixelforge.blog" style="color:var(--accent-primary);">hello@pixelforge.blog</a>
                 </div>
                 <div style="padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
@@ -54,15 +54,15 @@
             </div>
             <form id="contactForm" style="display:flex;flex-direction:column;gap:1.5rem;margin-bottom:3rem;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Name</label><input type="text" id="contactName" name="name" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="Your name" autocomplete="name"></div>
-                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Email</label><input type="email" id="contactEmail" name="email" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="your@email.com" autocomplete="email"></div>
+                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Name</label><input type="text" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="Your name" id="contactName" name="name" autocomplete="name"></div>
+                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Email</label><input type="email" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="your@email.com" id="contactEmail" name="email" autocomplete="email"></div>
                 </div>
                 <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Subject</label>
-                    <select id="contactSubject" name="subject" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;">
+                    <select id="contactSubject" name="subject" autocomplete="off" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;">
                         <option>General Inquiry</option><option>Guest Writing</option><option>Advertising</option><option>Partnership</option><option>Other</option>
                     </select>
                 </div>
-                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Message</label><textarea id="contactMessage" name="message" required rows="6" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;font-family:inherit;resize:vertical;outline:none;" placeholder="Tell us what's on your mind..."></textarea></div>
+                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Message</label><textarea id="contactMessage" name="message" autocomplete="off" required rows="6" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;font-family:inherit;resize:vertical;outline:none;" placeholder="Tell us what\'s on your mind..."></textarea></div>
                 <button type="submit" class="btn-primary" style="align-self:flex-start;">Send Message →</button>
             </form>
             <div id="contactSuccess" style="display:none;padding:1.5rem;background:rgba(0,255,136,0.1);border:1px solid var(--success);border-radius:var(--border-radius-sm);color:var(--success);text-align:center;">✅ Message sent! We'll get back to you soon.</div>
@@ -71,7 +71,7 @@
     <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
     <div class="toast-container" id="toastContainer"></div>
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/js/main.js"></script>
+    <script src="/assets/js/main.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded',()=>{
         document.getElementById('currentYear').textContent=new Date().getFullYear();
