@@ -1,122 +1,518 @@
-const siteConfig = {
-  name: "PixelForge",
-  url: window.location.origin,
-  apiUrl: "https://blockmines.page.gd/api"
+/* PixelForge — main.js */
+const API = 'https://blockmines.page.gd/api/index.php';
+
+let state = {
+  bookmarks: JSON.parse(localStorage.getItem('pf-bm') || '[]'),
+  filter:    'all',
+  page:      1,
+  pages:     1,
+  settings:  {},
 };
-let state = {bookmarks:JSON.parse(localStorage.getItem('pf-bookmarks'))||[],currentFilter:'all',currentPage:1,articlesPerPage:9,cachedPosts:[],cachedSettings:{}};
-const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 
-async function api(action,params={}){
-    const url=new URL(siteConfig.apiUrl+"/index.php");
-    url.searchParams.set('action',action);
-    Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-    try{const r=await fetch(url);return await r.json();}catch(e){return{error:'Connection failed'};}
-}
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 
-// Theme
-function initTheme(){const s=localStorage.getItem('pf-theme')||'dark';document.documentElement.setAttribute('data-theme',s);if($('#themeToggle'))$('#themeToggle').textContent=s==='dark'?'☀️':'🌙';}
-function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('pf-theme',n);if($('#themeToggle'))$('#themeToggle').textContent=n==='dark'?'☀️':'🌙';}
-
-// Navigation
-function initNavigation(){
-    window.addEventListener('scroll',()=>{
-        if($('#navbar'))$('#navbar').classList.toggle('scrolled',window.scrollY>50);
-        const btt=$('#backToTop');if(btt)btt.classList.toggle('visible',window.scrollY>500);
-        const pb=$('#progressBar');if(pb){const s=window.scrollY;const h=document.documentElement.scrollHeight-window.innerHeight;pb.style.width=h>0?(s/h*100)+'%':'0%';}
+/* ── API CALL ─────────────────────────────────────────────── */
+async function api(action, params = {}) {
+  const url = new URL(API);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  try {
+    const r = await fetch(url.toString(), {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
     });
-    if($('#mobileToggle')){$('#mobileToggle').addEventListener('click',()=>{$('#mobileToggle').classList.toggle('active');$('#navLinks')?.classList.toggle('active');});}
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const text = await r.text();
+    // Strip any InfinityFree injected HTML before the JSON
+    const jsonStart = text.indexOf('{');
+    if (jsonStart < 0) throw new Error('No JSON in response');
+    return JSON.parse(text.slice(jsonStart));
+  } catch (e) {
+    console.error('[API] ' + action, e.message);
+    return { error: e.message };
+  }
 }
 
-// Search
-function toggleSearch(){const o=$('#searchOverlay');if(!o)return;o.classList.toggle('active');if(o.classList.contains('active'))setTimeout(()=>$('#searchInput')?.focus(),300);}
-async function handleSearch(q){const r=$('#searchResults');if(!r)return;if(!q.trim()){r.innerHTML='';return;}const d=await api('search',{q});r.innerHTML=d.posts&&d.posts.length?d.posts.map(p=>`<a href="/article/${p.slug}.html" class="search-result-item"><img src="${p.featured_image||'/assets/placeholder.jpg'}" alt="${p.title}" loading="lazy"><div class="search-result-info"><h4>${p.title}</h4><p>${p.category} • ${p.published_at?new Date(p.published_at).toLocaleDateString():'Draft'}</p></div></a>`).join(''):'<p style="color:var(--text-muted);text-align:center;padding:2rem">No results found.</p>';}
-function setSearchQuery(q){const i=$('#searchInput');if(i){i.value=q;handleSearch(q);}}
-
-// Bookmarks
-function toggleBookmark(slug){const idx=state.bookmarks.indexOf(slug);if(idx>-1){state.bookmarks.splice(idx,1);showToast('Removed from bookmarks','info');}else{state.bookmarks.push(slug);showToast('Saved to bookmarks!','success');}localStorage.setItem('pf-bookmarks',JSON.stringify(state.bookmarks));updateBookmarksUI();}
-function isBookmarked(slug){return state.bookmarks.includes(slug);}
-function updateBookmarksUI(){const l=$('#bookmarksList');if(!l)return;l.innerHTML=state.bookmarks.length?'':'<div class="empty-bookmarks"><div class="icon">🔖</div><p>No saved articles yet.</p></div>';}
-function toggleBookmarksModal(){$('#bookmarksModal')?.classList.toggle('active');}
-
-// Render cards
-function renderCards(posts){
-    if(!posts||!posts.length)return '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)"><h3>No articles yet</h3><p>Check back soon!</p></div>';
-    return posts.map(p=>`<article class="blog-card fade-in" itemscope itemtype="https://schema.org/BlogPosting">
-    <div class="card-image"><a href="/article/${p.slug}.html"><img src="${p.featured_image||'/assets/placeholder.jpg'}" alt="${p.title}" loading="lazy" itemprop="image"></a><div class="card-actions"><button class="card-action-btn ${isBookmarked(p.slug)?'bookmarked':''}" onclick="event.preventDefault();event.stopPropagation();toggleBookmark('${p.slug}')" title="Bookmark">${isBookmarked(p.slug)?'★':'☆'}</button><button class="card-action-btn" onclick="event.preventDefault();event.stopPropagation();shareArticle('${p.title.replace(/'/g,"\\'")}')" title="Share">↗</button></div></div>
-    <div class="card-body"><div class="card-tags"><span class="category-badge ${p.category}">${p.category.replace('-',' ').toUpperCase()}</span>${(p.tags||'').split(',').filter(t=>t.trim()).slice(0,2).map(t=>`<span class="card-tag">${t.trim()}</span>`).join('')}</div><h3 itemprop="headline"><a href="/article/${p.slug}.html">${p.title}</a></h3><p class="card-excerpt" itemprop="description">${p.excerpt||''}</p><div class="card-footer"><div class="card-author"><img src="${p.author_avatar||'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👤</text></svg>'}" alt="${p.author_name||'Author'}" loading="lazy"><div class="card-author-info"><div class="card-author-name" itemprop="author">${p.author_name||'Staff'}</div><div class="card-author-date"><time itemprop="datePublished">${p.published_at?new Date(p.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}</time></div></div></div><div class="card-stats"><span class="card-stat">👁️ ${p.views||0}</span><span class="card-stat">💬 ${p.comment_count||0}</span></div></div></div></article>`).join('');
+/* ── THEME ────────────────────────────────────────────────── */
+function initTheme() {
+  const t = localStorage.getItem('pf-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  if ($('#themeToggle')) $('#themeToggle').textContent = t === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('pf-theme', next);
+  if ($('#themeToggle')) $('#themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
 }
 
-// Featured post
-function renderFeatured(posts,container){
-    if(!posts.length)return;const f=posts[0];
-    container.innerHTML=`<section class="featured-section" style="padding:0 0 4rem"><div class="section-header"><h2 class="section-title"><span class="dot"></span> Featured</h2><a href="/articles.html" class="view-all">View All →</a></div><a href="/article/${f.slug}.html" class="featured-post fade-in"><div class="featured-image"><img src="${f.featured_image||'/assets/placeholder.jpg'}" alt="${f.title}" loading="eager"><span class="featured-badge">Featured</span></div><div class="featured-content"><div class="post-meta"><span class="category-badge ${f.category}">${f.category.replace('-',' ').toUpperCase()}</span><span class="meta-item">${f.published_at?new Date(f.published_at).toLocaleDateString():''}</span></div><h2>${f.title}</h2><p>${f.excerpt||''}</p><div class="author-row"><img src="${f.author_avatar||''}" alt="${f.author_name}" class="author-avatar"><div class="author-info"><div class="author-name">${f.author_name||'Staff'}</div></div></div></div></a></section>`;
+/* ── NAV ──────────────────────────────────────────────────── */
+function initNav() {
+  window.addEventListener('scroll', () => {
+    const nb = $('#navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 50);
+    const btt = $('#backToTop');
+    if (btt) btt.classList.toggle('visible', window.scrollY > 500);
+    const pb = $('#progressBar');
+    if (pb) {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      pb.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
+    }
+  }, { passive: true });
+
+  const mt = $('#mobileToggle');
+  const nl = $('#navLinks');
+  if (mt && nl) {
+    mt.addEventListener('click', () => {
+      nl.classList.toggle('active');
+      mt.classList.toggle('active');
+    });
+    // Close menu when clicking a link
+    nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      nl.classList.remove('active');
+      mt.classList.remove('active');
+    }));
+  }
+
+  // Active nav link
+  const path = window.location.pathname;
+  $$('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href') || '';
+    if (href === path || (href !== '/' && path.startsWith(href.replace('.html',''))))
+      a.classList.add('active');
+  });
 }
 
-// Load posts
-async function loadPosts(container,showFeatured=false){
-    const d=await api('get_posts',{category:state.currentFilter==='all'?'':state.currentFilter,page:state.currentPage});
-    if(!d.posts)return;
-    state.cachedPosts=d.posts;
-    if(showFeatured&&d.posts.length){renderFeatured([d.posts[0]],container);const rest=d.posts.slice(1);const g=document.createElement('div');g.id='blogGrid';g.className='blog-grid';g.innerHTML=renderCards(rest);container.appendChild(g);}
-    else{container.innerHTML=renderCards(d.posts);}
-    renderPagination(d.pages||1);
-    setTimeout(()=>container.querySelectorAll('.fade-in').forEach(e=>e.classList.add('visible')),100);
+/* ── SEARCH ───────────────────────────────────────────────── */
+function toggleSearch() {
+  const o = $('#searchOverlay');
+  if (!o) return;
+  o.classList.toggle('active');
+  if (o.classList.contains('active'))
+    setTimeout(() => $('#searchInput')?.focus(), 200);
+}
+function setSearchQuery(q) {
+  const i = $('#searchInput');
+  if (i) { i.value = q; handleSearch(q); }
+}
+let searchTimer;
+async function handleSearch(q) {
+  clearTimeout(searchTimer);
+  const r = $('#searchResults');
+  if (!r) return;
+  if (!q.trim()) { r.innerHTML = ''; return; }
+  r.innerHTML = '<p style="color:var(--text-muted);padding:1rem;text-align:center">Searching…</p>';
+  searchTimer = setTimeout(async () => {
+    const d = await api('search', { q });
+    if (d.posts && d.posts.length) {
+      r.innerHTML = d.posts.map(p =>
+        `<a href="/article/${p.slug}" class="search-result-item">
+           <img src="${p.featured_image || '/assets/images/placeholder.jpg'}" alt="${esc(p.title)}" loading="lazy">
+           <div class="search-result-info">
+             <h4>${esc(p.title)}</h4>
+             <p>${esc(p.category)} · ${p.published_at ? new Date(p.published_at).toLocaleDateString() : ''}</p>
+           </div>
+         </a>`
+      ).join('');
+    } else {
+      r.innerHTML = '<p style="color:var(--text-muted);padding:2rem;text-align:center">No results found.</p>';
+    }
+  }, 300);
 }
 
-// Pagination
-function renderPagination(pages){const c=$('#pagination');if(!c||pages<=1){if(c)c.innerHTML='';return;}let h='';h+=`<button class="pagination-btn" onclick="goToPage(${state.currentPage-1})" ${state.currentPage===1?'disabled':''}>←</button>`;for(let i=1;i<=pages;i++)h+=`<button class="pagination-btn ${i===state.currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;h+=`<button class="pagination-btn" onclick="goToPage(${state.currentPage+1})" ${state.currentPage===pages?'disabled':''}>→</button>`;c.innerHTML=h;}
-function goToPage(p){const c=state.cachedPages||1;if(p<1||p>c)return;state.currentPage=p;const g=$('#blogGrid');if(g)loadPosts(g,false);window.scrollTo({top:$('#blogGrid')?.offsetTop-100||0,behavior:'smooth'});}
-
-// Filters
-function initFilters(){
-    $$('.tab-btn').forEach(btn=>{btn.addEventListener('click',e=>{e.preventDefault();state.currentFilter=btn.dataset.category||'all';state.currentPage=1;$$('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const g=$('#blogGrid');if(g)loadPosts(g,false);});});
+/* ── BOOKMARKS ────────────────────────────────────────────── */
+function toggleBookmark(slug) {
+  const i = state.bookmarks.indexOf(slug);
+  if (i > -1) {
+    state.bookmarks.splice(i, 1);
+    showToast('Removed from bookmarks', 'info');
+  } else {
+    state.bookmarks.push(slug);
+    showToast('Saved to bookmarks! 🔖', 'success');
+  }
+  localStorage.setItem('pf-bm', JSON.stringify(state.bookmarks));
+  // Update all bookmark buttons for this slug
+  $$(`[data-bookmark="${slug}"]`).forEach(btn => {
+    btn.classList.toggle('bookmarked', state.bookmarks.includes(slug));
+    btn.textContent = state.bookmarks.includes(slug) ? '★' : '☆';
+  });
+  renderBookmarks();
+}
+function isBookmarked(slug) { return state.bookmarks.includes(slug); }
+function toggleBookmarksModal() {
+  $('#bookmarksModal')?.classList.toggle('active');
+  renderBookmarks();
+}
+function renderBookmarks() {
+  const l = $('#bookmarksList');
+  if (!l) return;
+  if (!state.bookmarks.length) {
+    l.innerHTML = '<div class="empty-state"><div class="icon">🔖</div><p>No saved articles yet.</p></div>';
+    return;
+  }
+  l.innerHTML = state.bookmarks.map(slug =>
+    `<a href="/article/${slug}" class="bookmark-item">
+       <div style="flex:1"><strong>${slug.replace(/-/g,' ')}</strong></div>
+     </a>`
+  ).join('');
 }
 
-// Newsletter
-function initNewsletter(){const f=$('#newsletterForm');if(!f)return;f.addEventListener('submit',async e=>{e.preventDefault();const em=f.querySelector('input[type="email"]')?.value;if(!em)return;const d=await api('subscribe',{email:em});f.style.display='none';if($('#newsletterSuccess'))$('#newsletterSuccess').classList.add('show');showToast(d.message||'Subscribed!','success');});}
-function scrollToNewsletter(){$('#newsletter')?.scrollIntoView({behavior:'smooth'});}
-
-// Share
-function shareArticle(title){if(navigator.share){navigator.share({title,url:window.location.href}).catch(()=>{});}else{navigator.clipboard.writeText(window.location.href).then(()=>showToast('Link copied!','success'));}}
-function shareToTwitter(title){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(title)+'&url='+encodeURIComponent(window.location.href),'_blank');}
-function shareToLinkedIn(){window.open('https://linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(window.location.href),'_blank');}
-
-// Reactions
-function initReactions(){$$('.reaction-btn').forEach(btn=>{btn.addEventListener('click',()=>{btn.classList.toggle('active');const s=btn.querySelector('span');if(s){let c=parseInt(s.textContent)||0;s.textContent=btn.classList.contains('active')?c+1:Math.max(0,c-1);}});});}
-
-// Comments
-function initComments(){const f=$('#commentForm');if(!f)return;f.addEventListener('submit',async e=>{e.preventDefault();const ta=f.querySelector('textarea');if(!ta?.value.trim()){showToast('Write a comment first!','warning');return;}await api('add_comment',{post_id:window.postId||0,content:ta.value});showToast('Comment submitted!','success');ta.value='';});}
-
-// Toast
-function showToast(msg,type='info'){const c=$('#toastContainer');if(!c)return;const t=document.createElement('div');t.className='toast '+type;t.innerHTML=`<span>${type==='success'?'✅':type==='warning'?'⚠️':'ℹ️'}</span><span>${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;c.appendChild(t);setTimeout(()=>t.remove(),4000);}
-
-// Scroll
-function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
-function initScrollAnimations(){const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');o.unobserve(e.target);}});},{threshold:0.1});document.querySelectorAll('.fade-in').forEach(e=>o.observe(e));}
-
-// Load settings
-async function loadSettings(){const d=await api('get_settings');if(d.settings)state.cachedSettings=d.settings;return d.settings||{};}
-
-// Inject AdSense
-function injectAdsense(settings){
-    if(!settings.adsense_client)return;
-    const s=document.createElement('script');s.async=true;s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';s.crossorigin='anonymous';document.head.appendChild(s);
-    if(settings.adsense_header)addAdSlot(settings.adsense_client,settings.adsense_header,'after','nav.navbar','display:block;width:100%;max-width:728px;margin:1rem auto;text-align:center;');
-    if(settings.adsense_sidebar)addAdSlot(settings.adsense_client,settings.adsense_sidebar,'before','footer','.sidebar-ad{display:block;margin:1rem 0;}');
-    if(settings.adsense_footer)addAdSlot(settings.adsense_client,settings.adsense_footer,'before','footer','.footer-ad{display:block;max-width:728px;margin:2rem auto;text-align:center;}');
+/* ── RENDER CARDS ─────────────────────────────────────────── */
+function renderCards(posts) {
+  if (!posts || !posts.length) {
+    return `<div style="grid-column:1/-1;text-align:center;padding:5rem 1rem;color:var(--text-muted)">
+      <div style="font-size:2.5rem;margin-bottom:1rem">🎮</div>
+      <h3 style="margin-bottom:.5rem;color:var(--text-primary)">No articles yet</h3>
+      <p>Check back soon — we're writing!</p>
+    </div>`;
+  }
+  return posts.map(p => {
+    const d = p.published_at ? new Date(p.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const tags = (p.tags || '').split(',').map(t=>t.trim()).filter(Boolean).slice(0,2)
+      .map(t=>`<span class="card-tag">${esc(t)}</span>`).join('');
+    const bm = isBookmarked(p.slug);
+    return `<article class="blog-card fade-in" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="card-image">
+    <a href="/article/${p.slug}">
+      <img src="${p.featured_image || '/assets/images/placeholder.jpg'}" alt="${esc(p.title)}" loading="lazy" itemprop="image">
+    </a>
+    <div class="card-overlay"></div>
+    <div class="card-actions">
+      <button class="card-action-btn ${bm?'bookmarked':''}" data-bookmark="${p.slug}"
+        onclick="event.preventDefault();event.stopPropagation();toggleBookmark('${p.slug}')" title="${bm?'Remove bookmark':'Bookmark'}">${bm?'★':'☆'}</button>
+      <button class="card-action-btn" onclick="event.preventDefault();event.stopPropagation();sharePost('${esc(p.title)}','${p.slug}')" title="Share">↗</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-tags">
+      <span class="badge ${p.category}">${p.category.replace(/-/g,' ').toUpperCase()}</span>
+      ${tags}
+    </div>
+    <h3 itemprop="headline"><a href="/article/${p.slug}">${esc(p.title)}</a></h3>
+    <p class="card-excerpt" itemprop="description">${esc(p.excerpt||'')}</p>
+    <div class="card-footer">
+      <div class="card-author">
+        <img src="${p.author_avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%231a1a25'/%3E%3Ctext y='.9em' x='50%25' text-anchor='middle' font-size='24' dy='0.1em'%3E👤%3C/text%3E%3C/svg%3E"}" alt="${esc(p.author_name||'')}" loading="lazy">
+        <div>
+          <div class="card-author-name" itemprop="author">${esc(p.author_name||'Staff')}</div>
+          <div class="card-author-date"><time itemprop="datePublished">${d}</time></div>
+        </div>
+      </div>
+      <div class="card-stats">
+        <span>👁️ ${fmtNum(p.views||0)}</span>
+        <span>💬 ${p.comment_count||0}</span>
+      </div>
+    </div>
+  </div>
+</article>`;
+  }).join('');
 }
-function addAdSlot(client,slot,position,selector,style){
-    const target=document.querySelector(selector);if(!target)return;
-    const div=document.createElement('div');div.className='ad-slot';div.style=style||'text-align:center;margin:1rem 0;';
-    div.innerHTML=`<ins class="adsbygoogle" style="display:block" data-ad-client="${client}" data-ad-slot="${slot}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
-    position==='after'?target.after(div):target.before(div);
-    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+
+/* ── FEATURED ────────────────────────────────────────────── */
+function renderFeatured(post) {
+  if (!post) return '';
+  const d = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+  return `<a href="/article/${post.slug}" class="featured-post fade-in" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="featured-image">
+    <img src="${post.featured_image||'/assets/images/placeholder.jpg'}" alt="${esc(post.title)}" loading="eager" itemprop="image">
+    <span class="featured-badge">⭐ Featured</span>
+  </div>
+  <div class="featured-content">
+    <div class="post-meta">
+      <span class="badge ${post.category}">${post.category.replace(/-/g,' ').toUpperCase()}</span>
+      <span class="meta-item">📅 ${d}</span>
+      <span class="meta-item">👁️ ${fmtNum(post.views||0)}</span>
+    </div>
+    <h2 itemprop="headline">${esc(post.title)}</h2>
+    <p itemprop="description">${esc(post.excerpt||'')}</p>
+    <div class="author-row">
+      <img src="${post.author_avatar||''}" alt="${esc(post.author_name||'')}" class="author-avatar" loading="lazy">
+      <div class="author-info">
+        <div class="author-name" itemprop="author">${esc(post.author_name||'Staff')}</div>
+        <div class="author-role" style="color:var(--text-muted);font-size:.8rem">PixelForge Writer</div>
+      </div>
+    </div>
+  </div>
+</a>`;
 }
 
-// Init
-document.addEventListener('DOMContentLoaded',()=>{
-    initTheme();initNavigation();initNewsletter();initReactions();initComments();initFilters();initScrollAnimations();updateBookmarksUI();
-    loadSettings().then(s=>injectAdsense(s));
-    // Keyboard
-    document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();toggleSearch();}if(e.key==='Escape'){const so=$('#searchOverlay');if(so)so.classList.remove('active');const bm=$('#bookmarksModal');if(bm)bm.classList.remove('active');}});
+/* ── LOAD POSTS ───────────────────────────────────────────── */
+async function loadPosts(container, showFeatured = false) {
+  // Show skeleton
+  container.innerHTML = skeletonGrid(showFeatured ? 3 : 9);
+  const params = { page: state.page };
+  if (state.filter && state.filter !== 'all') params.category = state.filter;
+  const d = await api('get_posts', params);
+  if (d.error || !d.posts) {
+    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
+      <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
+      <h3>Could not load articles</h3>
+      <p style="margin-top:.5rem">Please try again later.</p>
+    </div>`;
+    return;
+  }
+  state.pages = d.pages || 1;
+
+  if (showFeatured && d.posts.length) {
+    const featured = d.posts[0];
+    const rest = d.posts.slice(1);
+    container.innerHTML = `
+      <section style="margin-bottom:3rem">${renderFeatured(featured)}</section>
+      <div class="blog-grid">${renderCards(rest)}</div>`;
+  } else {
+    container.innerHTML = renderCards(d.posts);
+  }
+
+  renderPagination(d.pages || 1);
+  animate(container);
+}
+
+/* ── PAGINATION ──────────────────────────────────────────── */
+function renderPagination(pages) {
+  const c = $('#pagination');
+  if (!c) return;
+  if (pages <= 1) { c.innerHTML = ''; return; }
+  const cur = state.page;
+  let h = `<button class="pagination-btn" onclick="goTo(${cur-1})" ${cur===1?'disabled':''} aria-label="Previous">←</button>`;
+  const delta = 2;
+  for (let i = 1; i <= pages; i++) {
+    if (i===1||i===pages||Math.abs(i-cur)<=delta) {
+      h += `<button class="pagination-btn ${i===cur?'active':''}" onclick="goTo(${i})">${i}</button>`;
+    } else if (Math.abs(i-cur)===delta+1) {
+      h += `<span style="color:var(--text-muted);padding:0 .25rem">…</span>`;
+    }
+  }
+  h += `<button class="pagination-btn" onclick="goTo(${cur+1})" ${cur===pages?'disabled':''} aria-label="Next">→</button>`;
+  c.innerHTML = h;
+}
+function goTo(p) {
+  if (p < 1 || p > state.pages) return;
+  state.page = p;
+  const g = $('#blogGrid') || $('#postsContainer');
+  if (g) { loadPosts(g, false); window.scrollTo({top:g.offsetTop-100,behavior:'smooth'}); }
+}
+
+/* ── FILTERS ─────────────────────────────────────────────── */
+function initFilters() {
+  $$('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      state.filter = btn.dataset.category || 'all';
+      state.page = 1;
+      $$('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const g = $('#blogGrid') || $('#postsContainer');
+      if (g) loadPosts(g, false);
+    });
+  });
+}
+
+/* ── NEWSLETTER ──────────────────────────────────────────── */
+function initNewsletter() {
+  const f = $('#newsletterForm');
+  if (!f) return;
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const em = f.querySelector('input[type="email"]')?.value;
+    if (!em) return;
+    const btn = f.querySelector('button');
+    if (btn) btn.textContent = 'Subscribing…';
+    const d = await api('subscribe', { email: em });
+    f.style.display = 'none';
+    $('#newsletterSuccess')?.classList.add('show');
+    showToast(d.message || 'Subscribed!', 'success');
+  });
+}
+function scrollToNewsletter() { $('#newsletter')?.scrollIntoView({behavior:'smooth'}); }
+
+/* ── SHARE ────────────────────────────────────────────────── */
+function sharePost(title, slug) {
+  const url = window.location.origin + '/article/' + slug;
+  if (navigator.share) {
+    navigator.share({title, url}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied! 🔗', 'success'));
+  }
+}
+function shareArticle(title) {
+  if (navigator.share) {
+    navigator.share({title, url: window.location.href}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied! 🔗', 'success'));
+  }
+}
+function shareToX(title)    { window.open('https://x.com/intent/tweet?text='+encodeURIComponent(title)+'&url='+encodeURIComponent(window.location.href),'_blank'); }
+function shareToLinkedIn()  { window.open('https://linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(window.location.href),'_blank'); }
+function shareToFacebook()  { window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href),'_blank'); }
+function shareToReddit()    { window.open('https://reddit.com/submit?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent(document.title),'_blank'); }
+
+/* ── REACTIONS ────────────────────────────────────────────── */
+function initReactions() {
+  $$('.reaction-btn').forEach(btn => {
+    const key = 'pf-react-' + (window.postSlug || window.location.pathname);
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
+    const emoji = btn.querySelector('span:first-child')?.textContent || btn.textContent[0];
+    if (stored[emoji]) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      const s = btn.querySelector('span:last-child');
+      if (s) {
+        let c = parseInt(s.textContent) || 0;
+        s.textContent = btn.classList.contains('active') ? c+1 : Math.max(0,c-1);
+      }
+      stored[emoji] = btn.classList.contains('active');
+      localStorage.setItem(key, JSON.stringify(stored));
+    });
+  });
+}
+
+/* ── COMMENTS ────────────────────────────────────────────────*/
+function initComments() {
+  const f = $('#commentForm');
+  if (!f) return;
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name    = f.querySelector('#commentName')?.value?.trim();
+    const email   = f.querySelector('#commentEmail')?.value?.trim();
+    const content = f.querySelector('#commentText')?.value?.trim();
+    if (!name || !content) { showToast('Please fill in name and comment', 'warning'); return; }
+    const btn = f.querySelector('button[type="submit"]');
+    if (btn) btn.textContent = 'Submitting…';
+    const d = await api('add_comment', { post_id: window.postId || 0, name, email: email||'', content });
+    if (btn) btn.textContent = 'Post Comment';
+    if (d.success) {
+      showToast(d.message, 'success');
+      f.querySelector('#commentText').value = '';
+    } else {
+      showToast(d.error || 'Failed to submit', 'error');
+    }
+  });
+}
+
+/* ── SETTINGS & ADSENSE ──────────────────────────────────── */
+async function loadSettings() {
+  const d = await api('get_settings');
+  if (d.settings) {
+    state.settings = d.settings;
+    applyAdsense(d.settings);
+  }
+}
+function applyAdsense(s) {
+  if (!s || !s.adsense_client) return;
+  // Load the AdSense script once
+  if (!document.querySelector('script[src*="adsbygoogle"]')) {
+    const sc = document.createElement('script');
+    sc.async = true;
+    sc.src   = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + s.adsense_client;
+    sc.crossOrigin = 'anonymous';
+    document.head.appendChild(sc);
+  }
+  // Inject ad slots
+  const slots = [
+    { key:'adsense_header',    sel:'nav.navbar',  pos:'after',  cls:'ad-header' },
+    { key:'adsense_inarticle', sel:'.ad-inarticle',pos:'replace',cls:'ad-inarticle-inner' },
+    { key:'adsense_sidebar',   sel:'.ad-sidebar', pos:'replace',cls:'ad-sidebar-inner' },
+    { key:'adsense_footer',    sel:'footer.footer',pos:'before', cls:'ad-footer' },
+  ];
+  slots.forEach(({ key, sel, pos, cls }) => {
+    if (!s[key]) return;
+    const ins = `<ins class="adsbygoogle" style="display:block" data-ad-client="${s.adsense_client}" data-ad-slot="${s[key]}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
+    const target = document.querySelector(sel);
+    if (!target) return;
+    if (pos === 'replace') { target.innerHTML = ins; }
+    else {
+      const div = document.createElement('div');
+      div.className = cls;
+      div.style.cssText = 'text-align:center;padding:.5rem 0;';
+      div.innerHTML = ins;
+      pos === 'after' ? target.after(div) : target.before(div);
+    }
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+  });
+}
+
+/* ── TRENDING SIDEBAR ────────────────────────────────────── */
+async function loadTrending() {
+  const c = $('#trendingList');
+  if (!c) return;
+  const d = await api('get_trending');
+  if (!d.posts?.length) return;
+  c.innerHTML = d.posts.map((p, i) =>
+    `<a href="/article/${p.slug}" class="trending-item">
+       <span class="trending-num">${i+1}</span>
+       <div class="trending-info">
+         <h4>${esc(p.title)}</h4>
+         <p>${esc(p.category)} · ${fmtNum(p.views||0)} views</p>
+       </div>
+     </a>`
+  ).join('');
+}
+
+/* ── TOAST ────────────────────────────────────────────────── */
+function showToast(msg, type = 'info') {
+  const c = $('#toastContainer');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  const icons = { success:'✅', warning:'⚠️', error:'❌', info:'ℹ️' };
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4500);
+}
+
+/* ── SCROLL ANIMATIONS ───────────────────────────────────── */
+function animate(root = document) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.08 });
+  root.querySelectorAll('.fade-in:not(.visible)').forEach(el => obs.observe(el));
+}
+
+/* ── HELPERS ─────────────────────────────────────────────── */
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtNum(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
+function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+
+function skeletonGrid(n) {
+  const cards = Array.from({length:n}, () => `
+    <div class="loading-card">
+      <div class="skeleton loading-img"></div>
+      <div class="loading-body">
+        <div class="skeleton loading-title"></div>
+        <div class="skeleton loading-text"></div>
+        <div class="skeleton loading-text sm"></div>
+      </div>
+    </div>`).join('');
+  return `<div class="loading-grid">${cards}</div>`;
+}
+
+/* ── INIT ─────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initNav();
+  initNewsletter();
+  initReactions();
+  initComments();
+  initFilters();
+  animate();
+  loadSettings();
+  renderBookmarks();
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); toggleSearch(); }
+    if (e.key === 'Escape') {
+      $('#searchOverlay')?.classList.remove('active');
+      $('#bookmarksModal')?.classList.remove('active');
+    }
+  });
+
+  // Close overlays on backdrop click
+  $('#searchOverlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) toggleSearch(); });
+  $('#bookmarksModal')?.addEventListener('click', e => { if (e.target === e.currentTarget) toggleBookmarksModal(); });
+
+  // Set current year
+  $$('#currentYear, .current-year').forEach(el => el.textContent = new Date().getFullYear());
 });

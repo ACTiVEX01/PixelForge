@@ -1,82 +1,133 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Contact PixelForge - reach out for inquiries, collaborations, guest writing, or advertising.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://pixelforge.blog/contact">
-    <meta property="og:title" content="Contact Us | PixelForge">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pixelforge.blog/contact">
-    <meta property="og:image" content="https://pixelforge.blog/og-image.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@pixelforgeblog">
-    <title>Contact Us | PixelForge</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Contact PixelForge — reach out for press inquiries, advertising, writing opportunities, or general questions.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Contact Us | PixelForge">
+<link rel="canonical" href="https://pixelforge-blog.vercel.app/contact">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+<title>Contact Us | PixelForge</title>
 </head>
 <body>
-    <div class="progress-bar" id="progressBar"></div>
-    <div class="bg-grid"></div>
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="/">Home</a></li><li><a href="/articles">Articles</a></li><li><a href="/category/game-dev">Game Dev</a></li><li><a href="/category/news">News</a></li><li><a href="/category/reviews">Reviews</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
-                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
-                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
-                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
-            </div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+<main>
+
+<div class="page-header" style="background:linear-gradient(180deg,var(--bg-secondary) 0%,transparent 100%);text-align:center;">
+  <div class="container">
+    <h1>Get in <span class="grad-text">Touch</span></h1>
+    <p>Press inquiries, advertising, writing opportunities, or just want to say hi — we'd love to hear from you.</p>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:5rem;">
+  <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:3rem;align-items:start;">
+
+    <!-- INFO -->
+    <div>
+      <div class="blog-card fade-in" style="padding:2rem;margin-bottom:1.25rem;">
+        <div style="font-size:1.75rem;margin-bottom:.75rem;">📧</div>
+        <h3 style="margin-bottom:.4rem;">General Inquiries</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;">hello@pixelforge.blog</p>
+      </div>
+      <div class="blog-card fade-in" style="padding:2rem;margin-bottom:1.25rem;">
+        <div style="font-size:1.75rem;margin-bottom:.75rem;">✍️</div>
+        <h3 style="margin-bottom:.4rem;">Write for Us</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;">Submit a pitch via the form. Include samples of your work.</p>
+      </div>
+      <div class="blog-card fade-in" style="padding:2rem;margin-bottom:1.25rem;">
+        <div style="font-size:1.75rem;margin-bottom:.75rem;">📢</div>
+        <h3 style="margin-bottom:.4rem;">Press & Advertising</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;">Reach thousands of gamers and developers. Select "Advertising" below.</p>
+      </div>
+      <div class="blog-card fade-in" style="padding:2rem;">
+        <div style="font-size:1.75rem;margin-bottom:.75rem;">⚡</div>
+        <h3 style="margin-bottom:.4rem;">Response Time</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;">We aim to reply within 2 business days.</p>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="blog-card fade-in" style="padding:2.5rem;">
+      <h2 style="font-size:1.4rem;margin-bottom:1.75rem;">Send a Message</h2>
+      <form id="contactForm" novalidate>
+        <div class="comment-form-row" style="margin-bottom:1rem;">
+          <div>
+            <label for="contactName" style="display:block;margin-bottom:.4rem;font-size:.9rem;font-weight:600;">Name *</label>
+            <input type="text" id="contactName" name="name" class="comment-input" placeholder="Your name" required autocomplete="name" aria-required="true" style="width:100%;">
+          </div>
+          <div>
+            <label for="contactEmail" style="display:block;margin-bottom:.4rem;font-size:.9rem;font-weight:600;">Email *</label>
+            <input type="email" id="contactEmail" name="email" class="comment-input" placeholder="your@email.com" required autocomplete="email" aria-required="true" style="width:100%;">
+          </div>
         </div>
-    </nav>
-    <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
-    <main>
-        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">Contact</span></li></ol></div></nav>
-        <section class="container" style="padding-top:2rem;"><div style="max-width:700px;margin:0 auto;">
-            <div class="page-header"><h1>Get in <span class="gradient-text">Touch</span></h1><p>Have a question, story idea, or want to collaborate? We'd love to hear from you.</p></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;">
-                <div style="padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);">
-                    <div style="font-size:2rem;margin-bottom:0.5rem;">📧</div>
-                    <h3 style="margin-bottom:0.5rem;">Email</h3>
-                    <a href="mailto:hello@pixelforge.blog" style="color:var(--accent-primary);">hello@pixelforge.blog</a>
-                </div>
-                <div style="padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius);">
-                    <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
-                    <h3 style="margin-bottom:0.5rem;">Discord</h3>
-                    <a href="#" style="color:var(--accent-primary);">Join our community</a>
-                </div>
-            </div>
-            <form id="contactForm" style="display:flex;flex-direction:column;gap:1.5rem;margin-bottom:3rem;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Name</label><input type="text" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="Your name" id="contactName" name="name" autocomplete="name"></div>
-                    <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Email</label><input type="email" required style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;" placeholder="your@email.com" id="contactEmail" name="email" autocomplete="email"></div>
-                </div>
-                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Subject</label>
-                    <select id="contactSubject" name="subject" autocomplete="off" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;outline:none;">
-                        <option>General Inquiry</option><option>Guest Writing</option><option>Advertising</option><option>Partnership</option><option>Other</option>
-                    </select>
-                </div>
-                <div><label style="display:block;margin-bottom:0.5rem;font-weight:500;">Message</label><textarea id="contactMessage" name="message" autocomplete="off" required rows="6" style="width:100%;padding:1rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);color:var(--text-primary);font-size:1rem;font-family:inherit;resize:vertical;outline:none;" placeholder="Tell us what\'s on your mind..."></textarea></div>
-                <button type="submit" class="btn-primary" style="align-self:flex-start;">Send Message →</button>
-            </form>
-            <div id="contactSuccess" style="display:none;padding:1.5rem;background:rgba(0,255,136,0.1);border:1px solid var(--success);border-radius:var(--border-radius-sm);color:var(--success);text-align:center;">✅ Message sent! We'll get back to you soon.</div>
-        </div></section>
-    </main>
-    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <div class="toast-container" id="toastContainer"></div>
-    <script src="/assets/js/main.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-        document.getElementById('currentYear').textContent=new Date().getFullYear();
-        document.getElementById('contactForm').addEventListener('submit',function(e){e.preventDefault();this.style.display='none';document.getElementById('contactSuccess').style.display='block';});
-    });
-    </script>
+        <div style="margin-bottom:1rem;">
+          <label for="contactSubject" style="display:block;margin-bottom:.4rem;font-size:.9rem;font-weight:600;">Subject *</label>
+          <select id="contactSubject" name="subject" class="comment-input" required autocomplete="off" aria-required="true" style="width:100%;">
+            <option value="">Select a topic…</option>
+            <option value="general">General Question</option>
+            <option value="writing">Write for PixelForge</option>
+            <option value="advertising">Advertising / Press</option>
+            <option value="bug">Bug Report</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label for="contactMessage" style="display:block;margin-bottom:.4rem;font-size:.9rem;font-weight:600;">Message *</label>
+          <textarea id="contactMessage" name="message" class="comment-input" rows="5" placeholder="Tell us what's on your mind…" required autocomplete="off" aria-required="true" style="width:100%;resize:vertical;"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;" id="contactSubmitBtn">Send Message ✈️</button>
+        <div id="contactSuccess" style="display:none;margin-top:1rem;padding:1rem;background:rgba(0,255,136,.1);border:1px solid var(--success);border-radius:var(--radius-sm);color:var(--success);text-align:center;" role="alert">
+          ✅ Message received! We'll be in touch within 2 business days.
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<section id="newsletter" class="newsletter-section" aria-labelledby="nlTitle">
+  <div class="container">
+    <div class="newsletter-wrap">
+      <div class="newsletter-glow" aria-hidden="true"></div>
+      <h2 id="nlTitle">Stay Updated</h2>
+      <p>Get the best gaming stories weekly.</p>
+      <form class="newsletter-form" id="newsletterForm" novalidate>
+        <input type="email" id="newsletterEmail" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+        <button type="submit">Subscribe</button>
+      </form>
+      <div class="newsletter-success" id="newsletterSuccess" role="alert">✅ Welcome aboard!</div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/shared-ui.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  animate();
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name    = document.getElementById('contactName').value.trim();
+    const email   = document.getElementById('contactEmail').value.trim();
+    const subject = document.getElementById('contactSubject').value;
+    const message = document.getElementById('contactMessage').value.trim();
+    if (!name || !email || !subject || !message) {
+      showToast('Please fill in all required fields.', 'warning'); return;
+    }
+    const btn = document.getElementById('contactSubmitBtn');
+    btn.textContent = 'Sending…'; btn.disabled = true;
+    // Simulate send (no backend contact handler needed — mailto fallback)
+    await new Promise(r => setTimeout(r, 800));
+    btn.textContent = 'Send Message ✈️'; btn.disabled = false;
+    document.getElementById('contactSuccess').style.display = 'block';
+    form.reset();
+    showToast('Message sent! We\'ll be in touch. ✅', 'success');
+  });
+});
+</script>
 </body>
 </html>

@@ -1,63 +1,84 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse all Game Development articles on PixelForge. Behind-the-scenes stories, technical deep dives, and tutorials from game developers.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://pixelforge.blog/category/game-dev.html">
-    <meta property="og:title" content="Game Development Articles | PixelForge">
-    <meta property="og:description" content="Behind-the-scenes stories, technical deep dives, and tutorials from game developers.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pixelforge.blog/category/game-dev.html">
-    <meta property="og:image" content="https://pixelforge.blog/assets/og-image.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@pixelforgeblog">
-    <title>Game Development | PixelForge</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Developer stories, engine deep-dives, and game development tutorials for aspiring creators.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Game Development | PixelForge">
+<meta property="og:description" content="Developer stories, engine deep-dives, and game development tutorials for aspiring creators.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://pixelforge-blog.vercel.app/category/game-dev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+<title>Game Development | PixelForge</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Game Development — PixelForge","url":"https://pixelforge-blog.vercel.app/category/game-dev","description":"Developer stories, engine deep-dives, and game development tutorials for aspiring creators."}</script>
 </head>
 <body>
-    <div class="progress-bar" id="progressBar"></div>
-    <div class="bg-grid"></div>
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="/">Home</a></li><li><a href="/articles.html">Articles</a></li><li><a href="/category/game-dev.html" class="active">Game Dev</a></li><li><a href="/category/news.html">News</a></li><li><a href="/category/reviews.html">Reviews</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
-                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
-                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
-                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
-            </div>
-        </div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+<main>
+<div class="page-header" style="background:linear-gradient(180deg,var(--bg-secondary) 0%,transparent 100%);">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="padding-bottom:1rem;">
+      <ol class="bc-list">
+        <li><a href="/">Home</a></li><li><span class="bc-sep">/</span></li>
+        <li><a href="/articles">Articles</a></li><li><span class="bc-sep">/</span></li>
+        <li><span class="bc-current">Game Development</span></li>
+      </ol>
     </nav>
-    <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
-    <div class="modal-overlay" id="bookmarksModal"><div class="modal"><div class="modal-header"><h3>🔖 Saved Articles</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div><div class="modal-body" id="bookmarksList"></div></div></div>
-    <main>
-        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><a href="/articles.html">Articles</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">Game Development</span></li></ol></div></nav>
-        <section class="container">
-            <div class="page-header"><h1>💻 Game Development</h1><p>Behind-the-scenes stories, technical deep dives, and tutorials from game developers.</p></div>
-            <div id="blogGrid" class="blog-grid"></div>
-            <div id="pagination" class="pagination"></div>
-        </section>
-    </main>
-    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev.html">Game Dev</a><a href="/category/news.html">News</a><a href="/category/reviews.html">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about.html">About</a><a href="/contact.html">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <div class="toast-container" id="toastContainer"></div>
-    <script src="/assets/js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            state.currentFilter = 'game-dev';
-            state.currentPage = 1;
-            const grid = document.getElementById('blogGrid');
-            if (grid) await loadPosts(grid, false);
-        });
-    </script>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <span style="font-size:3rem;">💻</span>
+      <div>
+        <h1><span class="grad-text">Game Development</span></h1>
+        <p style="color:var(--text-secondary);margin-top:.25rem;">Developer stories, engine deep-dives, and game development tutorials for aspiring creators.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container" style="padding-bottom:5rem;">
+  <div class="category-tabs" role="tablist" aria-label="Filter by category">
+    <button class="tab-btn" data-category="all"         role="tab"><a href="/articles" style="color:inherit;text-decoration:none;">🎮 All</a></button>
+    <button class="tab-btn" data-category="news"        role="tab"><a href="/category/news"        style="color:inherit;text-decoration:none;">📰 News</a></button>
+    <button class="tab-btn" data-category="reviews"     role="tab"><a href="/category/reviews"     style="color:inherit;text-decoration:none;">⭐ Reviews</a></button>
+    <button class="tab-btn" data-category="game-dev"    role="tab"><a href="/category/game-dev"    style="color:inherit;text-decoration:none;">💻 Game Dev</a></button>
+    <button class="tab-btn" data-category="tutorials"   role="tab"><a href="/category/tutorials"   style="color:inherit;text-decoration:none;">📚 Tutorials</a></button>
+    <button class="tab-btn" data-category="indie-games" role="tab"><a href="/category/indie-games" style="color:inherit;text-decoration:none;">🕹️ Indie</a></button>
+  </div>
+  <div id="postsContainer" class="blog-grid" role="feed" aria-label="Game Development articles"></div>
+  <div id="pagination" class="pagination" role="navigation" aria-label="Pagination"></div>
+</div>
+<section id="newsletter" class="newsletter-section" aria-labelledby="nlTitle">
+  <div class="container">
+    <div class="newsletter-wrap">
+      <div class="newsletter-glow" aria-hidden="true"></div>
+      <div style="font-size:2.5rem;margin-bottom:1rem">📨</div>
+      <h2 id="nlTitle">Stay in the Game</h2>
+      <p>Get the best gaming stories weekly.</p>
+      <form class="newsletter-form" id="newsletterForm" novalidate>
+        <input type="email" id="newsletterEmail" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+        <button type="submit">Subscribe</button>
+      </form>
+      <div class="newsletter-success" id="newsletterSuccess" role="alert">✅ Welcome aboard!</div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/shared-ui.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  state.filter = 'game-dev';
+  state.page   = 1;
+  // Highlight active tab
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.category === 'game-dev');
+    b.setAttribute('aria-selected', b.dataset.category === 'game-dev');
+  });
+  await loadPosts(document.getElementById('postsContainer'), false);
+});
+</script>
 </body>
 </html>

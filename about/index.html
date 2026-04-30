@@ -1,68 +1,118 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn about PixelForge - our mission and why we cover gaming and game development.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://pixelforge.blog/about">
-    <meta property="og:title" content="About PixelForge">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pixelforge.blog/about">
-    <meta property="og:image" content="https://pixelforge.blog/og-image.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@pixelforgeblog">
-    <title>About Us | PixelForge</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="About PixelForge — the team behind the gaming news, reviews, tutorials and developer stories you love.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="About Us | PixelForge">
+<meta property="og:description" content="Meet the team behind PixelForge — gamers, developers, and storytellers.">
+<link rel="canonical" href="https://pixelforge-blog.vercel.app/about">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+<title>About Us | PixelForge</title>
 </head>
 <body>
-    <div class="progress-bar" id="progressBar"></div>
-    <div class="bg-grid"></div>
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="/">Home</a></li><li><a href="/articles">Articles</a></li><li><a href="/category/game-dev">Game Dev</a></li><li><a href="/category/news">News</a></li><li><a href="/category/reviews">Reviews</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
-                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
-                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
-                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
-            </div>
-        </div>
-    </nav>
-    <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
-    <main>
-        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">About</span></li></ol></div></nav>
-        <section class="container" style="padding-top:2rem;"><div style="max-width:800px;margin:0 auto;">
-            <div class="page-header"><h1>About <span class="gradient-text">PixelForge</span></h1><p>We're passionate gamers and developers sharing the stories that matter in gaming.</p></div>
-            <div style="color:var(--text-secondary);font-size:1.1rem;line-height:1.8;margin-bottom:3rem;">
-                <h2 style="color:var(--text-primary);font-size:1.5rem;margin-bottom:1rem;">Our Mission</h2>
-                <p style="margin-bottom:1.5rem;">PixelForge was created to bridge the gap between gamers and developers. We believe that understanding how games are made deepens the appreciation for the medium. Our mission is to provide in-depth, well-researched content that informs, educates, and entertains.</p>
-                <h2 style="color:var(--text-primary);font-size:1.5rem;margin:2rem 0 1rem;">What We Cover</h2>
-                <ul style="list-style:disc;padding-left:1.5rem;margin-bottom:1.5rem;">
-                    <li style="margin-bottom:0.5rem;"><strong>Game Development</strong> - Behind-the-scenes stories and technical deep dives</li>
-                    <li style="margin-bottom:0.5rem;"><strong>Gaming News</strong> - Breaking announcements and industry trends</li>
-                    <li style="margin-bottom:0.5rem;"><strong>Game Reviews</strong> - Honest, thorough reviews across all platforms</li>
-                    <li style="margin-bottom:0.5rem;"><strong>Tutorials</strong> - Step-by-step guides for aspiring developers</li>
-                    <li style="margin-bottom:0.5rem;"><strong>Indie Games</strong> - Spotlight on independent developers</li>
-                </ul>
-                <h2 style="color:var(--text-primary);font-size:1.5rem;margin:2rem 0 1rem;">Our Values</h2>
-                <p style="margin-bottom:1.5rem;">We believe in transparency, quality, and community. Every article is thoroughly researched. We maintain editorial independence and our reviews are always honest.</p>
-                <h2 style="color:var(--text-primary);font-size:1.5rem;margin:2rem 0 1rem;">Get in Touch</h2>
-                <p>Have a story idea, want to contribute, or just want to say hello? We'd love to hear from you.</p>
-                <a href="/contact" class="btn-primary" style="margin-top:1rem;display:inline-flex;">Contact Us →</a>
-            </div>
-        </div></section>
-    </main>
-    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <div class="toast-container" id="toastContainer"></div>
-    <script src="/assets/js/main.js"></script>
-    <script>document.addEventListener('DOMContentLoaded',()=>{document.getElementById('currentYear').textContent=new Date().getFullYear();});</script>
+<div class="progress-bar" id="progressBar"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+<main>
+
+<div class="page-header" style="background:linear-gradient(180deg,var(--bg-secondary) 0%,transparent 100%);text-align:center;">
+  <div class="container">
+    <div style="font-size:3rem;margin-bottom:1rem;">🎮</div>
+    <h1>About <span class="grad-text">PixelForge</span></h1>
+    <p style="max-width:580px;margin:0 auto;">We're a team of passionate gamers, developers, and storytellers dedicated to covering the world of gaming — honestly, deeply, and with real love for the craft.</p>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:5rem;">
+
+  <!-- MISSION -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin:4rem 0;padding:3rem;background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);">
+    <div>
+      <h2 style="font-family:var(--font-display);font-size:1.75rem;margin-bottom:1rem;">Our <span class="grad-text">Mission</span></h2>
+      <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:1rem;">PixelForge exists to be the gaming resource we always wished existed — one that treats readers like intelligent adults, covers indie games with the same care as AAA releases, and explains development concepts without the jargon.</p>
+      <p style="color:var(--text-secondary);line-height:1.8;">We believe great gaming content should be accessible, honest, and genuinely useful — whether you're a player, a developer, or both.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div style="padding:1.5rem;background:var(--bg-secondary);border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+        <div style="font-size:2rem;margin-bottom:.5rem;">📰</div>
+        <h3 style="font-size:1rem;margin-bottom:.25rem;">News</h3>
+        <p style="color:var(--text-muted);font-size:.85rem;">Fast, accurate coverage</p>
+      </div>
+      <div style="padding:1.5rem;background:var(--bg-secondary);border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+        <div style="font-size:2rem;margin-bottom:.5rem;">⭐</div>
+        <h3 style="font-size:1rem;margin-bottom:.25rem;">Reviews</h3>
+        <p style="color:var(--text-muted);font-size:.85rem;">Honest & in-depth</p>
+      </div>
+      <div style="padding:1.5rem;background:var(--bg-secondary);border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+        <div style="font-size:2rem;margin-bottom:.5rem;">💻</div>
+        <h3 style="font-size:1rem;margin-bottom:.25rem;">Dev Stories</h3>
+        <p style="color:var(--text-muted);font-size:.85rem;">Behind the scenes</p>
+      </div>
+      <div style="padding:1.5rem;background:var(--bg-secondary);border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+        <div style="font-size:2rem;margin-bottom:.5rem;">🕹️</div>
+        <h3 style="font-size:1rem;margin-bottom:.25rem;">Indie</h3>
+        <p style="color:var(--text-muted);font-size:.85rem;">Discover hidden gems</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUES -->
+  <div style="margin:4rem 0;">
+    <h2 style="font-family:var(--font-display);font-size:1.6rem;text-align:center;margin-bottom:2rem;">What We Stand For</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;">
+      <div class="blog-card fade-in" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🎯</div>
+        <h3 style="margin-bottom:.5rem;">Accuracy First</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.7;">We verify before we publish. No clickbait, no speculation presented as fact.</p>
+      </div>
+      <div class="blog-card fade-in" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🔍</div>
+        <h3 style="margin-bottom:.5rem;">Deep Coverage</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.7;">We go beyond surface-level takes. Every article is researched, not rushed.</p>
+      </div>
+      <div class="blog-card fade-in" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🤝</div>
+        <h3 style="margin-bottom:.5rem;">Community Driven</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.7;">Our readers shape what we cover. We listen, respond, and evolve with you.</p>
+      </div>
+      <div class="blog-card fade-in" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">💡</div>
+        <h3 style="margin-bottom:.5rem;">Indie Champions</h3>
+        <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.7;">We give indie games the spotlight they deserve alongside AAA titles.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE FOR US -->
+  <div style="text-align:center;padding:4rem;background:linear-gradient(135deg,rgba(0,245,255,.06),rgba(255,0,229,.04));border:1px solid rgba(0,245,255,.2);border-radius:var(--radius);">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">✍️</div>
+    <h2 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:.75rem;">Write for PixelForge</h2>
+    <p style="color:var(--text-secondary);max-width:520px;margin:0 auto 1.75rem;line-height:1.7;">Passionate about gaming or game development? We're always looking for knowledgeable writers who can bring fresh perspectives to our audience.</p>
+    <a href="/contact" class="btn-primary">Get in Touch →</a>
+  </div>
+
+</div>
+
+<section id="newsletter" class="newsletter-section" aria-labelledby="nlTitle">
+  <div class="container">
+    <div class="newsletter-wrap">
+      <div class="newsletter-glow" aria-hidden="true"></div>
+      <div style="font-size:2.5rem;margin-bottom:1rem">📨</div>
+      <h2 id="nlTitle">Join the Community</h2>
+      <p>Get weekly gaming stories delivered to your inbox.</p>
+      <form class="newsletter-form" id="newsletterForm" novalidate>
+        <input type="email" id="newsletterEmail" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+        <button type="submit">Subscribe</button>
+      </form>
+      <div class="newsletter-success" id="newsletterSuccess" role="alert">✅ Welcome aboard!</div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/shared-ui.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => animate());</script>
 </body>
 </html>

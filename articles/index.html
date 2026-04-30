@@ -1,77 +1,146 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse all articles on PixelForge - gaming news, game development stories, tutorials, reviews, and indie game coverage.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://pixelforge.blog/articles">
-    <meta property="og:title" content="All Articles | PixelForge">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pixelforge.blog/articles">
-    <meta property="og:image" content="https://pixelforge.blog/og-image.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@pixelforgeblog">
-    <title>All Articles | PixelForge</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Browse all PixelForge gaming articles — news, reviews, game development stories, tutorials, and indie game coverage.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="All Articles | PixelForge">
+<meta property="og:description" content="Browse all gaming articles on PixelForge — news, reviews, game dev, and tutorials.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://pixelforge-blog.vercel.app/articles">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+<title>All Articles | PixelForge</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"All Articles — PixelForge","url":"https://pixelforge-blog.vercel.app/articles","description":"Browse all gaming articles on PixelForge"}</script>
 </head>
 <body>
-    <div class="progress-bar" id="progressBar"></div>
-    <div class="bg-grid"></div>
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="/">Home</a></li><li><a href="/articles" class="active">Articles</a></li><li><a href="/category/game-dev">Game Dev</a></li><li><a href="/category/news">News</a></li><li><a href="/category/reviews">Reviews</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleSearch()">🔍</button>
-                <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button class="nav-btn" onclick="toggleBookmarksModal()">🔖</button>
-                <button class="btn-subscribe" onclick="scrollToNewsletter()">Subscribe</button>
-                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
-            </div>
-        </div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<main>
+<div class="page-header" style="background:linear-gradient(180deg,var(--bg-secondary) 0%,transparent 100%);">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="padding-bottom:1rem;">
+      <ol class="bc-list">
+        <li><a href="/">Home</a></li><li><span class="bc-sep">/</span></li>
+        <li><span class="bc-current">Articles</span></li>
+      </ol>
     </nav>
-    <div class="search-overlay" id="searchOverlay"><div class="search-container"><div class="search-box"><span>🔍</span><input type="search" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)"><button class="search-close" onclick="toggleSearch()">✕</button></div><div class="search-results" id="searchResults"></div></div></div>
-    <div class="modal-overlay" id="bookmarksModal"><div class="modal"><div class="modal-header"><h3>🔖 Saved</h3><button class="modal-close" onclick="toggleBookmarksModal()">✕</button></div><div class="modal-body" id="bookmarksList"></div></div></div>
- 
-    <main>
-        <nav class="breadcrumb"><div class="container"><ol class="breadcrumb-list"><li><a href="/">Home</a></li><li><span class="breadcrumb-separator">/</span></li><li><span class="breadcrumb-current">All Articles</span></li></ol></div></nav>
-        <section class="container">
-            <div class="page-header"><h1>All Articles</h1><p>Explore our complete collection of gaming news, game development stories, tutorials, reviews, and indie game coverage.</p></div>
-            <div class="category-tabs" id="categoryTabs">
-                <button class="tab-btn active" data-category="all">🎯 All</button>
-                <button class="tab-btn" data-category="game-dev">💻 Game Dev</button>
-                <button class="tab-btn" data-category="news">📰 News</button>
-                <button class="tab-btn" data-category="reviews">⭐ Reviews</button>
-                <button class="tab-btn" data-category="tutorials">📚 Tutorials</button>
-                <button class="tab-btn" data-category="indie-games">🎮 Indie</button>
-            </div>
-            <div id="blogGrid" class="blog-grid"></div>
-            <div id="pagination" class="pagination"></div>
-        </section>
-        <section class="newsletter-section" id="newsletter"><div class="newsletter-container fade-in"><div class="newsletter-glow"></div><div class="newsletter-content"><div class="newsletter-icon">📬</div><h2>Never Miss an Article</h2><p>Subscribe to get notified when we publish new content.</p><form class="newsletter-form" id="newsletterForm"><input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" required aria-label="Email address" autocomplete="email"><button type="submit">Subscribe →</button></form><div class="newsletter-success" id="newsletterSuccess">✅ Subscribed!</div></div></div></section>
-    </main>
- 
-    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a href="/" class="logo"><div class="logo-icon">🎮</div>PixelForge</a><p>Your ultimate destination for gaming news and game development insights.</p><div class="social-links"><a href="#" class="social-link">𝕏</a><a href="#" class="social-link">▶</a><a href="#" class="social-link">💬</a></div></div><div class="footer-column"><h4>Categories</h4><a href="/category/game-dev">Game Dev</a><a href="/category/news">News</a><a href="/category/reviews">Reviews</a></div><div class="footer-column"><h4>Company</h4><a href="/about">About</a><a href="/contact">Contact</a></div></div><div class="footer-bottom"><p>© <span id="currentYear"></span> PixelForge. All rights reserved.</p></div></div></footer>
- 
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <div class="toast-container" id="toastContainer"></div>
- 
-    <script src="/assets/js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            state.currentFilter = 'all';
-            state.currentPage = 1;
-            initFilters();
-            initNewsletter();
-            const grid = document.getElementById('blogGrid');
-            if (grid) await loadPosts(grid, false);
-        });
-    </script>
+    <h1>All <span class="grad-text">Articles</span></h1>
+    <p>Gaming news, reviews, developer stories, tutorials, and indie discoveries — everything in one place.</p>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:5rem;">
+
+  <!-- FILTERS + SEARCH BAR -->
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+    <div style="flex:1;min-width:220px;position:relative;">
+      <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);">🔍</span>
+      <input type="search" id="inlineSearch" name="search" placeholder="Search articles…" autocomplete="off"
+        style="width:100%;padding:.75rem 1rem .75rem 2.75rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:.95rem;outline:none;transition:var(--transition);"
+        aria-label="Search articles"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"
+        oninput="handleInlineSearch(this.value)">
+    </div>
+    <select id="sortSelect" name="sort" autocomplete="off"
+      style="padding:.75rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:.9rem;outline:none;"
+      aria-label="Sort articles" onchange="handleSort(this.value)">
+      <option value="latest">Latest First</option>
+      <option value="popular">Most Viewed</option>
+    </select>
+  </div>
+
+  <!-- CATEGORY TABS -->
+  <div class="category-tabs" role="tablist" aria-label="Filter by category">
+    <button class="tab-btn active" data-category="all"         role="tab" aria-selected="true">🎮 All</button>
+    <button class="tab-btn"        data-category="news"        role="tab" aria-selected="false">📰 News</button>
+    <button class="tab-btn"        data-category="reviews"     role="tab" aria-selected="false">⭐ Reviews</button>
+    <button class="tab-btn"        data-category="game-dev"    role="tab" aria-selected="false">💻 Game Dev</button>
+    <button class="tab-btn"        data-category="tutorials"   role="tab" aria-selected="false">📚 Tutorials</button>
+    <button class="tab-btn"        data-category="indie-games" role="tab" aria-selected="false">🕹️ Indie</button>
+  </div>
+
+  <!-- RESULTS INFO -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem;">
+    <p style="color:var(--text-muted);font-size:.9rem;" id="resultsInfo">Loading articles…</p>
+  </div>
+
+  <!-- GRID -->
+  <div id="postsContainer" class="blog-grid" role="feed" aria-label="Articles"></div>
+  <div id="pagination" class="pagination" role="navigation" aria-label="Pagination"></div>
+
+</div>
+
+<!-- NEWSLETTER -->
+<section id="newsletter" class="newsletter-section" aria-labelledby="nlTitle">
+  <div class="container">
+    <div class="newsletter-wrap">
+      <div class="newsletter-glow" aria-hidden="true"></div>
+      <div style="font-size:2.5rem;margin-bottom:1rem">📨</div>
+      <h2 id="nlTitle">Never Miss a Drop</h2>
+      <p>Weekly gaming stories, reviews, and dev insights straight to your inbox.</p>
+      <form class="newsletter-form" id="newsletterForm" novalidate>
+        <input type="email" id="newsletterEmail" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+        <button type="submit">Subscribe</button>
+      </form>
+      <div class="newsletter-success" id="newsletterSuccess" role="alert">✅ Welcome aboard! 🎮</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/shared-ui.js"></script>
+<script>
+// Override loadPosts to also update resultsInfo
+const _origLoadPosts = loadPosts;
+async function loadPosts(container, showFeatured) {
+  await _origLoadPosts(container, showFeatured);
+  const info = document.getElementById('resultsInfo');
+  if (info) {
+    const cat = state.filter !== 'all' ? ' in ' + state.filter.replace(/-/g,' ') : '';
+    info.textContent = `Showing page ${state.page} of ${state.pages}${cat}`;
+  }
+}
+
+let searchDebounce;
+function handleInlineSearch(q) {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(async () => {
+    const container = document.getElementById('postsContainer');
+    if (!q.trim()) { state.filter = 'all'; state.page = 1; loadPosts(container, false); return; }
+    container.innerHTML = skeletonGrid(6);
+    const d = await api('search', { q });
+    if (d.posts) container.innerHTML = renderCards(d.posts) || '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem;">No results for "' + esc(q) + '"</p>';
+    animate(container);
+  }, 350);
+}
+function handleSort(v) {
+  // For now re-load — server-side sort can be added later
+  state.page = 1;
+  loadPosts(document.getElementById('postsContainer'), false);
+}
+
+// Check URL params for tag filter
+const urlTag = new URLSearchParams(window.location.search).get('tag');
+
+document.addEventListener('DOMContentLoaded', async () => {
+  initFilters();
+  const container = document.getElementById('postsContainer');
+  if (urlTag) {
+    container.innerHTML = skeletonGrid(6);
+    const d = await api('get_posts', { tag: urlTag, page: 1 });
+    if (d.posts) { container.innerHTML = renderCards(d.posts); animate(container); }
+    const info = document.getElementById('resultsInfo');
+    if (info) info.textContent = `Articles tagged "${urlTag}"`;
+  } else {
+    await loadPosts(container, false);
+  }
+});
+</script>
 </body>
 </html>

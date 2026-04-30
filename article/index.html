@@ -26,10 +26,10 @@
 <body>
 <div class="progress-bar" id="progressBar"></div>
 <div class="bg-grid" aria-hidden="true"></div>
- 
+
 <main style="padding-top:80px;">
 <div class="container" style="padding:2rem 2rem 0;">
- 
+
   <!-- BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol class="bc-list" itemscope itemtype="https://schema.org/BreadcrumbList">
@@ -49,16 +49,16 @@
       </li>
     </ol>
   </nav>
- 
+
 </div>
- 
+
 <!-- CONTENT + SIDEBAR LAYOUT -->
 <div class="container" style="padding:1rem 2rem 4rem;">
 <div class="content-with-sidebar">
- 
+
 <!-- ARTICLE -->
 <article id="articleWrap" itemscope itemtype="https://schema.org/BlogPosting">
- 
+
   <!-- LOADING STATE -->
   <div id="articleLoading">
     <div style="height:38px;width:160px;margin-bottom:1rem;" class="skeleton"></div>
@@ -71,10 +71,10 @@
       <div style="height:16px;width:88%;" class="skeleton"></div>
     </div>
   </div>
- 
+
   <!-- ARTICLE CONTENT (hidden until loaded) -->
   <div id="articleMain" style="display:none;">
- 
+
     <header class="article-header">
       <span class="article-category" id="articleCategory"></span>
       <h1 id="articleTitle" itemprop="headline"></h1>
@@ -101,24 +101,24 @@
         </div>
       </div>
     </header>
- 
+
     <!-- FEATURED IMAGE -->
     <div id="articleImageWrap" style="width:100%;border-radius:var(--radius);overflow:hidden;margin-bottom:2.5rem;max-height:520px;">
       <img id="articleImage" src="" alt="" style="width:100%;height:100%;object-fit:cover;" loading="eager" itemprop="image">
     </div>
- 
+
     <!-- IN-ARTICLE AD (top) -->
     <div class="ad-inarticle" id="adInArticleTop" style="display:none;"></div>
- 
+
     <!-- BODY -->
     <div class="article-content" id="articleContent" itemprop="articleBody"></div>
- 
+
     <!-- IN-ARTICLE AD (bottom) -->
     <div class="ad-inarticle" id="adInArticleBottom" style="display:none;"></div>
- 
+
     <!-- TAGS -->
     <div class="article-tags" id="articleTags" role="list" aria-label="Tags"></div>
- 
+
     <!-- REACTIONS -->
     <div class="reactions" id="reactions" role="group" aria-label="Reactions">
       <button class="reaction-btn" aria-label="Fire reaction">🔥 <span>0</span></button>
@@ -127,14 +127,14 @@
       <button class="reaction-btn" aria-label="Idea reaction">💡 <span>0</span></button>
       <button class="reaction-btn" aria-label="Love reaction">❤️ <span>0</span></button>
     </div>
- 
+
     <!-- BOOKMARK BUTTON -->
     <div style="margin:1.5rem 0;">
       <button id="bookmarkBtn" class="btn-secondary" onclick="handleBookmark()" style="gap:.5rem;">
         ☆ <span id="bookmarkLabel">Bookmark Article</span>
       </button>
     </div>
- 
+
     <!-- AUTHOR BIO -->
     <div id="authorBio" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin:2rem 0;display:flex;gap:1.25rem;align-items:flex-start;">
       <img id="bioPic" src="" alt="" width="72" height="72" style="border-radius:50%;object-fit:cover;border:2px solid var(--accent);flex-shrink:0;">
@@ -144,17 +144,17 @@
         <p id="bioBio" style="color:var(--text-secondary);font-size:.9rem;"></p>
       </div>
     </div>
- 
+
     <!-- RELATED POSTS -->
     <section id="relatedSection" style="margin-top:3rem;padding-top:2.5rem;border-top:1px solid var(--border);" aria-labelledby="relatedTitle">
       <h2 class="section-title" id="relatedTitle" style="margin-bottom:1.5rem;"><span class="dot" aria-hidden="true"></span> Related Articles</h2>
       <div id="relatedGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;"></div>
     </section>
- 
+
     <!-- COMMENTS -->
     <section class="comments-section" aria-labelledby="commentsTitle">
       <h2 class="section-title" id="commentsTitle"><span class="dot" aria-hidden="true"></span> Comments (<span id="commentCountLabel">0</span>)</h2>
- 
+
       <form class="comment-form" id="commentForm" style="margin-top:1.5rem;" novalidate>
         <div class="comment-form-row">
           <input type="text"  id="commentName"  name="name"  class="comment-input" placeholder="Your name *" required autocomplete="name" aria-label="Your name">
@@ -165,12 +165,12 @@
           <button class="btn-primary" type="submit">Post Comment</button>
         </div>
       </form>
- 
+
       <div class="comment-list" id="commentList" role="list" aria-label="Comments"></div>
     </section>
- 
+
   </div><!-- /articleMain -->
- 
+
   <!-- NOT FOUND STATE -->
   <div id="articleNotFound" style="display:none;text-align:center;padding:5rem 2rem;">
     <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
@@ -178,12 +178,12 @@
     <p style="color:var(--text-muted);margin:1rem 0 2rem;">This article doesn't exist or has been removed.</p>
     <a href="/articles" class="btn-primary">Browse All Articles</a>
   </div>
- 
+
 </article>
- 
+
 <!-- SIDEBAR -->
 <aside class="sidebar" aria-label="Sidebar">
- 
+
   <!-- TRENDING -->
   <div class="sidebar-widget">
     <h3>🔥 Trending Now</h3>
@@ -193,12 +193,12 @@
       <div style="height:60px;" class="skeleton"></div>
     </div>
   </div>
- 
+
   <!-- AD SIDEBAR -->
   <div class="sidebar-widget ad-sidebar" id="adSidebar">
     <div style="text-align:center;color:var(--text-muted);font-size:.75rem;padding:1rem;">Advertisement</div>
   </div>
- 
+
   <!-- NEWSLETTER (compact) -->
   <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(0,245,255,.06),rgba(255,0,229,.04));border-color:rgba(0,245,255,.2);">
     <h3>📨 Newsletter</h3>
@@ -208,12 +208,12 @@
       <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Subscribe</button>
     </form>
   </div>
- 
+
 </aside>
- 
+
 </div><!-- /content-with-sidebar -->
 </div><!-- /container -->
- 
+
 <!-- NEWSLETTER SECTION -->
 <section id="newsletter" class="newsletter-section" aria-labelledby="nlTitle">
   <div class="container">
@@ -230,9 +230,9 @@
     </div>
   </div>
 </section>
- 
+
 </main>
- 
+
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/shared-ui.js"></script>
 <script>
@@ -240,14 +240,14 @@
   // Extract slug from URL: /article/my-post-slug
   const slug = window.location.pathname.replace(/^\/article\//, '').replace(/\.html$/, '').replace(/\/$/, '');
   if (!slug) { showNotFound(); return; }
- 
+
   const d = await api('get_post', { slug });
   if (d.error || !d.post) { showNotFound(); return; }
- 
+
   const p = d.post;
   window.postId   = p.id;
   window.postSlug = p.slug;
- 
+
   /* ── SEO ──────────────────────────────────────────────── */
   const title    = (p.seo_title    || p.title) + ' | PixelForge';
   const desc     = p.meta_description || p.excerpt || '';
@@ -263,7 +263,7 @@
   document.getElementById('twDesc').content    = desc;
   document.getElementById('twImage').content   = p.featured_image || '';
   document.getElementById('canonicalLink').href= canonical;
- 
+
   /* ── JSON-LD ─────────────────────────────────────────── */
   const ld = document.createElement('script');
   ld.type = 'application/ld+json';
@@ -283,13 +283,13 @@
     "keywords":       (p.tags||''),
   });
   document.head.appendChild(ld);
- 
+
   /* ── FILL CONTENT ────────────────────────────────────── */
   const pubDate = p.published_at ? new Date(p.published_at) : null;
   const fmtDate = pubDate ? pubDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
   const words   = (p.content||'').split(' ').length;
   const mins    = Math.max(1, Math.ceil(words / 200));
- 
+
   document.getElementById('bcCurrent').textContent     = p.title;
   document.getElementById('articleCategory').textContent= p.category.replace(/-/g,' ').toUpperCase();
   document.getElementById('articleCategory').className = 'article-category badge ' + p.category;
@@ -301,7 +301,7 @@
   document.getElementById('articleReadTime').textContent = mins + ' min read';
   document.getElementById('articleViews').textContent  = fmtNum(p.views || 0);
   document.getElementById('articleCommentCount').textContent = (p.comments||[]).length;
- 
+
   const img = document.getElementById('articleImage');
   if (p.featured_image) {
     img.src = p.featured_image;
@@ -309,23 +309,23 @@
   } else {
     document.getElementById('articleImageWrap').style.display = 'none';
   }
- 
+
   const authorImg = document.getElementById('articleAuthorImg');
   if (p.author_avatar) { authorImg.src = p.author_avatar; authorImg.alt = p.author_name||''; }
   else authorImg.style.display = 'none';
- 
+
   document.getElementById('articleContent').innerHTML = p.content || '';
- 
+
   // Tags
   const tagsEl = document.getElementById('articleTags');
   const tags = (p.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
   tagsEl.innerHTML = tags.map(t =>
     `<a href="/articles?tag=${encodeURIComponent(t)}" class="article-tag" role="listitem">#${esc(t)}</a>`
   ).join('');
- 
+
   // Bookmark button
   updateBookmarkBtn(p.slug);
- 
+
   // Author bio
   if (p.author_name) {
     const bio = document.getElementById('authorBio');
@@ -333,7 +333,7 @@
     document.getElementById('bioName').textContent = p.author_name;
     if (p.author_avatar) document.getElementById('bioPic').src = p.author_avatar;
   }
- 
+
   // Related posts
   if (p.related && p.related.length) {
     const relGrid = document.getElementById('relatedGrid');
@@ -354,20 +354,20 @@
   } else {
     document.getElementById('relatedSection').style.display = 'none';
   }
- 
+
   // Comments
   renderComments(p.comments || []);
- 
+
   // Show content, hide loader
   document.getElementById('articleLoading').style.display = 'none';
   document.getElementById('articleMain').style.display    = 'block';
- 
+
   // Init interactions
   initReactions();
   initComments();
   loadTrending();
   animate();
- 
+
   // Sidebar newsletter
   const snf = document.getElementById('sidebarNewsletterForm');
   if (snf) {
@@ -380,20 +380,20 @@
     });
   }
 })();
- 
+
 function showNotFound() {
   document.getElementById('articleLoading').style.display = 'none';
   document.getElementById('articleNotFound').style.display = 'block';
   document.title = 'Article Not Found | PixelForge';
 }
- 
+
 function handleBookmark() {
   const slug = window.postSlug;
   if (!slug) return;
   toggleBookmark(slug);
   updateBookmarkBtn(slug);
 }
- 
+
 function updateBookmarkBtn(slug) {
   const btn   = document.getElementById('bookmarkBtn');
   const label = document.getElementById('bookmarkLabel');
@@ -403,7 +403,7 @@ function updateBookmarkBtn(slug) {
   btn.style.borderColor = bm ? 'var(--accent)' : '';
   btn.style.color       = bm ? 'var(--accent)' : '';
 }
- 
+
 function renderComments(comments) {
   const list  = document.getElementById('commentList');
   const label = document.getElementById('commentCountLabel');
@@ -431,4 +431,3 @@ function renderComments(comments) {
 </script>
 </body>
 </html>
- 

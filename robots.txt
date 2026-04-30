@@ -1,10 +1,22 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /uploads/
+Disallow: /config/
+Disallow: /api/
 
 # Sitemap
-Sitemap: https://pixelforge.blog/sitemap.xml
+Sitemap: https://pixelforge-blog.vercel.app/sitemap.xml
 
-# Disallow admin/private areas if any
-Disallow: /admin/
-Disallow: /private/
-Disallow: /drafts/
+# Allow major crawlers explicitly
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
