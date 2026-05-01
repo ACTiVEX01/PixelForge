@@ -2,12 +2,6 @@
   "cleanUrls": true,
   "trailingSlash": false,
 
-  "functions": {
-    "api/proxy.js": {
-      "runtime": "edge"
-    }
-  },
-
   "rewrites": [
     { "source": "/article/:slug", "destination": "/article/index.html" },
     { "source": "/articles",      "destination": "/articles/index.html" },
