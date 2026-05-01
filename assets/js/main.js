@@ -1,5 +1,6 @@
 /* PixelForge — main.js */
-const API = '/api/proxy'; // Vercel proxy — avoids CORS
+// API points to Vercel Edge proxy — never calls InfinityFree directly from browser
+const API = '/api/proxy';
 
 let state = {
   bookmarks: JSON.parse(localStorage.getItem('pf-bm') || '[]'),
@@ -14,20 +15,17 @@ const $$ = s => document.querySelectorAll(s);
 
 /* ── API CALL ─────────────────────────────────────────────── */
 async function api(action, params = {}) {
-  const url = new URL(API);
+  const url = new URL(API, window.location.origin);
   url.searchParams.set('action', action);
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   try {
     const r = await fetch(url.toString(), {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
     });
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    const text = await r.text();
-    // Strip any InfinityFree injected HTML before the JSON
-    const jsonStart = text.indexOf('{');
-    if (jsonStart < 0) throw new Error('No JSON in response');
-    return JSON.parse(text.slice(jsonStart));
+    const data = await r.json();
+    return data;
   } catch (e) {
     console.error('[API] ' + action, e.message);
     return { error: e.message };
@@ -38,23 +36,23 @@ async function api(action, params = {}) {
 function initTheme() {
   const t = localStorage.getItem('pf-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', t);
-  if ($('#themeToggle')) $('#themeToggle').textContent = t === 'dark' ? '☀️' : '🌙';
+  const btn = $('#themeToggle');
+  if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
 }
 function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme');
+  const cur  = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('pf-theme', next);
-  if ($('#themeToggle')) $('#themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  const btn = $('#themeToggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
 }
 
 /* ── NAV ──────────────────────────────────────────────────── */
 function initNav() {
   window.addEventListener('scroll', () => {
-    const nb = $('#navbar');
-    if (nb) nb.classList.toggle('scrolled', window.scrollY > 50);
-    const btt = $('#backToTop');
-    if (btt) btt.classList.toggle('visible', window.scrollY > 500);
+    $('#navbar')?.classList.toggle('scrolled', window.scrollY > 50);
+    $('#backToTop')?.classList.toggle('visible', window.scrollY > 500);
     const pb = $('#progressBar');
     if (pb) {
       const h = document.documentElement.scrollHeight - window.innerHeight;
@@ -66,13 +64,12 @@ function initNav() {
   const nl = $('#navLinks');
   if (mt && nl) {
     mt.addEventListener('click', () => {
-      nl.classList.toggle('active');
-      mt.classList.toggle('active');
+      const open = nl.classList.toggle('active');
+      mt.setAttribute('aria-expanded', open);
     });
-    // Close menu when clicking a link
     nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
       nl.classList.remove('active');
-      mt.classList.remove('active');
+      mt.setAttribute('aria-expanded', 'false');
     }));
   }
 
@@ -80,8 +77,9 @@ function initNav() {
   const path = window.location.pathname;
   $$('.nav-links a').forEach(a => {
     const href = a.getAttribute('href') || '';
-    if (href === path || (href !== '/' && path.startsWith(href.replace('.html',''))))
+    if (href === path || (href !== '/' && path.startsWith(href.replace(/\.html$/, '')))) {
       a.classList.add('active');
+    }
   });
 }
 
@@ -90,8 +88,7 @@ function toggleSearch() {
   const o = $('#searchOverlay');
   if (!o) return;
   o.classList.toggle('active');
-  if (o.classList.contains('active'))
-    setTimeout(() => $('#searchInput')?.focus(), 200);
+  if (o.classList.contains('active')) setTimeout(() => $('#searchInput')?.focus(), 200);
 }
 function setSearchQuery(q) {
   const i = $('#searchInput');
@@ -125,18 +122,12 @@ async function handleSearch(q) {
 /* ── BOOKMARKS ────────────────────────────────────────────── */
 function toggleBookmark(slug) {
   const i = state.bookmarks.indexOf(slug);
-  if (i > -1) {
-    state.bookmarks.splice(i, 1);
-    showToast('Removed from bookmarks', 'info');
-  } else {
-    state.bookmarks.push(slug);
-    showToast('Saved to bookmarks! 🔖', 'success');
-  }
+  if (i > -1) { state.bookmarks.splice(i, 1); showToast('Removed from bookmarks', 'info'); }
+  else         { state.bookmarks.push(slug);   showToast('Saved to bookmarks! 🔖', 'success'); }
   localStorage.setItem('pf-bm', JSON.stringify(state.bookmarks));
-  // Update all bookmark buttons for this slug
   $$(`[data-bookmark="${slug}"]`).forEach(btn => {
-    btn.classList.toggle('bookmarked', state.bookmarks.includes(slug));
-    btn.textContent = state.bookmarks.includes(slug) ? '★' : '☆';
+    btn.classList.toggle('bookmarked', isBookmarked(slug));
+    btn.textContent = isBookmarked(slug) ? '★' : '☆';
   });
   renderBookmarks();
 }
@@ -154,7 +145,7 @@ function renderBookmarks() {
   }
   l.innerHTML = state.bookmarks.map(slug =>
     `<a href="/article/${slug}" class="bookmark-item">
-       <div style="flex:1"><strong>${slug.replace(/-/g,' ')}</strong></div>
+       <div style="flex:1"><strong>${slug.replace(/-[a-z0-9]{6}$/, '').replace(/-/g, ' ')}</strong></div>
      </a>`
   ).join('');
 }
@@ -169,8 +160,8 @@ function renderCards(posts) {
     </div>`;
   }
   return posts.map(p => {
-    const d = p.published_at ? new Date(p.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-    const tags = (p.tags || '').split(',').map(t=>t.trim()).filter(Boolean).slice(0,2)
+    const d   = p.published_at ? new Date(p.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const tags = (p.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,2)
       .map(t=>`<span class="card-tag">${esc(t)}</span>`).join('');
     const bm = isBookmarked(p.slug);
     return `<article class="blog-card fade-in" itemscope itemtype="https://schema.org/BlogPosting">
@@ -181,8 +172,8 @@ function renderCards(posts) {
     <div class="card-overlay"></div>
     <div class="card-actions">
       <button class="card-action-btn ${bm?'bookmarked':''}" data-bookmark="${p.slug}"
-        onclick="event.preventDefault();event.stopPropagation();toggleBookmark('${p.slug}')" title="${bm?'Remove bookmark':'Bookmark'}">${bm?'★':'☆'}</button>
-      <button class="card-action-btn" onclick="event.preventDefault();event.stopPropagation();sharePost('${esc(p.title)}','${p.slug}')" title="Share">↗</button>
+        onclick="event.preventDefault();toggleBookmark('${p.slug}')" title="Bookmark">${bm?'★':'☆'}</button>
+      <button class="card-action-btn" onclick="event.preventDefault();sharePost('${esc(p.title)}','${p.slug}')" title="Share">↗</button>
     </div>
   </div>
   <div class="card-body">
@@ -194,7 +185,7 @@ function renderCards(posts) {
     <p class="card-excerpt" itemprop="description">${esc(p.excerpt||'')}</p>
     <div class="card-footer">
       <div class="card-author">
-        <img src="${p.author_avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%231a1a25'/%3E%3Ctext y='.9em' x='50%25' text-anchor='middle' font-size='24' dy='0.1em'%3E👤%3C/text%3E%3C/svg%3E"}" alt="${esc(p.author_name||'')}" loading="lazy">
+        <img src="${p.author_avatar||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%231a1a25%22/%3E%3Ctext y=%22.9em%22 x=%2250%25%22 text-anchor=%22middle%22 font-size=%2224%22 dy=%220.1em%22%3E👤%3C/text%3E%3C/svg%3E'}" alt="${esc(p.author_name||'')}" loading="lazy">
         <div>
           <div class="card-author-name" itemprop="author">${esc(p.author_name||'Staff')}</div>
           <div class="card-author-date"><time itemprop="datePublished">${d}</time></div>
@@ -229,7 +220,7 @@ function renderFeatured(post) {
     <p itemprop="description">${esc(post.excerpt||'')}</p>
     <div class="author-row">
       <img src="${post.author_avatar||''}" alt="${esc(post.author_name||'')}" class="author-avatar" loading="lazy">
-      <div class="author-info">
+      <div>
         <div class="author-name" itemprop="author">${esc(post.author_name||'Staff')}</div>
         <div class="author-role" style="color:var(--text-muted);font-size:.8rem">PixelForge Writer</div>
       </div>
@@ -240,7 +231,6 @@ function renderFeatured(post) {
 
 /* ── LOAD POSTS ───────────────────────────────────────────── */
 async function loadPosts(container, showFeatured = false) {
-  // Show skeleton
   container.innerHTML = skeletonGrid(showFeatured ? 3 : 9);
   const params = { page: state.page };
   if (state.filter && state.filter !== 'all') params.category = state.filter;
@@ -248,23 +238,19 @@ async function loadPosts(container, showFeatured = false) {
   if (d.error || !d.posts) {
     container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
       <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
-      <h3>Could not load articles</h3>
+      <h3 style="color:var(--text-primary)">Could not load articles</h3>
       <p style="margin-top:.5rem">Please try again later.</p>
     </div>`;
     return;
   }
   state.pages = d.pages || 1;
-
   if (showFeatured && d.posts.length) {
-    const featured = d.posts[0];
-    const rest = d.posts.slice(1);
     container.innerHTML = `
-      <section style="margin-bottom:3rem">${renderFeatured(featured)}</section>
-      <div class="blog-grid">${renderCards(rest)}</div>`;
+      <section style="margin-bottom:3rem">${renderFeatured(d.posts[0])}</section>
+      <div class="blog-grid">${renderCards(d.posts.slice(1))}</div>`;
   } else {
     container.innerHTML = renderCards(d.posts);
   }
-
   renderPagination(d.pages || 1);
   animate(container);
 }
@@ -276,13 +262,11 @@ function renderPagination(pages) {
   if (pages <= 1) { c.innerHTML = ''; return; }
   const cur = state.page;
   let h = `<button class="pagination-btn" onclick="goTo(${cur-1})" ${cur===1?'disabled':''} aria-label="Previous">←</button>`;
-  const delta = 2;
   for (let i = 1; i <= pages; i++) {
-    if (i===1||i===pages||Math.abs(i-cur)<=delta) {
+    if (i===1||i===pages||Math.abs(i-cur)<=2)
       h += `<button class="pagination-btn ${i===cur?'active':''}" onclick="goTo(${i})">${i}</button>`;
-    } else if (Math.abs(i-cur)===delta+1) {
+    else if (Math.abs(i-cur)===3)
       h += `<span style="color:var(--text-muted);padding:0 .25rem">…</span>`;
-    }
   }
   h += `<button class="pagination-btn" onclick="goTo(${cur+1})" ${cur===pages?'disabled':''} aria-label="Next">→</button>`;
   c.innerHTML = h;
@@ -291,7 +275,7 @@ function goTo(p) {
   if (p < 1 || p > state.pages) return;
   state.page = p;
   const g = $('#blogGrid') || $('#postsContainer');
-  if (g) { loadPosts(g, false); window.scrollTo({top:g.offsetTop-100,behavior:'smooth'}); }
+  if (g) { loadPosts(g, false); window.scrollTo({top: g.offsetTop - 100, behavior:'smooth'}); }
 }
 
 /* ── FILTERS ─────────────────────────────────────────────── */
@@ -300,9 +284,10 @@ function initFilters() {
     btn.addEventListener('click', e => {
       e.preventDefault();
       state.filter = btn.dataset.category || 'all';
-      state.page = 1;
-      $$('.tab-btn').forEach(b => b.classList.remove('active'));
+      state.page   = 1;
+      $$('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
       btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
       const g = $('#blogGrid') || $('#postsContainer');
       if (g) loadPosts(g, false);
     });
@@ -311,97 +296,82 @@ function initFilters() {
 
 /* ── NEWSLETTER ──────────────────────────────────────────── */
 function initNewsletter() {
-  const f = $('#newsletterForm');
-  if (!f) return;
-  f.addEventListener('submit', async e => {
-    e.preventDefault();
-    const em = f.querySelector('input[type="email"]')?.value;
-    if (!em) return;
-    const btn = f.querySelector('button');
-    if (btn) btn.textContent = 'Subscribing…';
-    const d = await api('subscribe', { email: em });
-    f.style.display = 'none';
-    $('#newsletterSuccess')?.classList.add('show');
-    showToast(d.message || 'Subscribed!', 'success');
+  $$('#newsletterForm, #sidebarNewsletterForm').forEach(f => {
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      const em  = f.querySelector('input[type="email"]')?.value;
+      if (!em) return;
+      const btn = f.querySelector('button[type="submit"]');
+      if (btn) { btn.textContent = 'Subscribing…'; btn.disabled = true; }
+      const d = await api('subscribe', { email: em });
+      if (btn) { btn.textContent = 'Subscribe'; btn.disabled = false; }
+      f.style.display = 'none';
+      const suc = f.parentElement?.querySelector('.newsletter-success') || $('#newsletterSuccess');
+      if (suc) suc.classList.add('show');
+      showToast(d.message || 'Subscribed! Welcome 🎮', 'success');
+    });
   });
 }
-function scrollToNewsletter() { $('#newsletter')?.scrollIntoView({behavior:'smooth'}); }
+function scrollToNewsletter() { $('#newsletter')?.scrollIntoView({ behavior:'smooth' }); }
 
 /* ── SHARE ────────────────────────────────────────────────── */
 function sharePost(title, slug) {
   const url = window.location.origin + '/article/' + slug;
-  if (navigator.share) {
-    navigator.share({title, url}).catch(()=>{});
-  } else {
-    navigator.clipboard.writeText(url).then(() => showToast('Link copied! 🔗', 'success'));
-  }
+  if (navigator.share) navigator.share({ title, url }).catch(()=>{});
+  else navigator.clipboard.writeText(url).then(() => showToast('Link copied! 🔗', 'success'));
 }
 function shareArticle(title) {
-  if (navigator.share) {
-    navigator.share({title, url: window.location.href}).catch(()=>{});
-  } else {
-    navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied! 🔗', 'success'));
-  }
+  if (navigator.share) navigator.share({ title, url: window.location.href }).catch(()=>{});
+  else navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied! 🔗', 'success'));
 }
-function shareToX(title)    { window.open('https://x.com/intent/tweet?text='+encodeURIComponent(title)+'&url='+encodeURIComponent(window.location.href),'_blank'); }
-function shareToLinkedIn()  { window.open('https://linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(window.location.href),'_blank'); }
-function shareToFacebook()  { window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href),'_blank'); }
-function shareToReddit()    { window.open('https://reddit.com/submit?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent(document.title),'_blank'); }
+function shareToX(title)   { window.open('https://x.com/intent/tweet?text='+encodeURIComponent(title)+'&url='+encodeURIComponent(location.href),'_blank'); }
+function shareToLinkedIn() { window.open('https://linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(location.href),'_blank'); }
+function shareToFacebook() { window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'_blank'); }
+function shareToReddit()   { window.open('https://reddit.com/submit?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title),'_blank'); }
 
 /* ── REACTIONS ────────────────────────────────────────────── */
 function initReactions() {
   $$('.reaction-btn').forEach(btn => {
-    const key = 'pf-react-' + (window.postSlug || window.location.pathname);
+    const key    = 'pf-react-' + (window.postSlug || location.pathname);
     const stored = JSON.parse(localStorage.getItem(key) || '{}');
-    const emoji = btn.querySelector('span:first-child')?.textContent || btn.textContent[0];
+    const emoji  = btn.textContent.trim()[0];
     if (stored[emoji]) btn.classList.add('active');
     btn.addEventListener('click', () => {
       btn.classList.toggle('active');
-      const s = btn.querySelector('span:last-child');
-      if (s) {
-        let c = parseInt(s.textContent) || 0;
-        s.textContent = btn.classList.contains('active') ? c+1 : Math.max(0,c-1);
-      }
+      const s = btn.querySelector('span');
+      if (s) s.textContent = btn.classList.contains('active') ? (+s.textContent||0)+1 : Math.max(0,(+s.textContent||1)-1);
       stored[emoji] = btn.classList.contains('active');
       localStorage.setItem(key, JSON.stringify(stored));
     });
   });
 }
 
-/* ── COMMENTS ────────────────────────────────────────────────*/
+/* ── COMMENTS ────────────────────────────────────────────── */
 function initComments() {
   const f = $('#commentForm');
   if (!f) return;
   f.addEventListener('submit', async e => {
     e.preventDefault();
     const name    = f.querySelector('#commentName')?.value?.trim();
-    const email   = f.querySelector('#commentEmail')?.value?.trim();
+    const email   = f.querySelector('#commentEmail')?.value?.trim() || '';
     const content = f.querySelector('#commentText')?.value?.trim();
     if (!name || !content) { showToast('Please fill in name and comment', 'warning'); return; }
     const btn = f.querySelector('button[type="submit"]');
-    if (btn) btn.textContent = 'Submitting…';
-    const d = await api('add_comment', { post_id: window.postId || 0, name, email: email||'', content });
-    if (btn) btn.textContent = 'Post Comment';
-    if (d.success) {
-      showToast(d.message, 'success');
-      f.querySelector('#commentText').value = '';
-    } else {
-      showToast(d.error || 'Failed to submit', 'error');
-    }
+    if (btn) { btn.textContent = 'Submitting…'; btn.disabled = true; }
+    const d = await api('add_comment', { post_id: window.postId||0, name, email, content });
+    if (btn) { btn.textContent = 'Post Comment'; btn.disabled = false; }
+    if (d.success) { showToast(d.message, 'success'); f.querySelector('#commentText').value = ''; }
+    else showToast(d.error || 'Failed to submit', 'error');
   });
 }
 
 /* ── SETTINGS & ADSENSE ──────────────────────────────────── */
 async function loadSettings() {
   const d = await api('get_settings');
-  if (d.settings) {
-    state.settings = d.settings;
-    applyAdsense(d.settings);
-  }
+  if (d.settings) { state.settings = d.settings; applyAdsense(d.settings); }
 }
 function applyAdsense(s) {
   if (!s || !s.adsense_client) return;
-  // Load the AdSense script once
   if (!document.querySelector('script[src*="adsbygoogle"]')) {
     const sc = document.createElement('script');
     sc.async = true;
@@ -409,28 +379,6 @@ function applyAdsense(s) {
     sc.crossOrigin = 'anonymous';
     document.head.appendChild(sc);
   }
-  // Inject ad slots
-  const slots = [
-    { key:'adsense_header',    sel:'nav.navbar',  pos:'after',  cls:'ad-header' },
-    { key:'adsense_inarticle', sel:'.ad-inarticle',pos:'replace',cls:'ad-inarticle-inner' },
-    { key:'adsense_sidebar',   sel:'.ad-sidebar', pos:'replace',cls:'ad-sidebar-inner' },
-    { key:'adsense_footer',    sel:'footer.footer',pos:'before', cls:'ad-footer' },
-  ];
-  slots.forEach(({ key, sel, pos, cls }) => {
-    if (!s[key]) return;
-    const ins = `<ins class="adsbygoogle" style="display:block" data-ad-client="${s.adsense_client}" data-ad-slot="${s[key]}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
-    const target = document.querySelector(sel);
-    if (!target) return;
-    if (pos === 'replace') { target.innerHTML = ins; }
-    else {
-      const div = document.createElement('div');
-      div.className = cls;
-      div.style.cssText = 'text-align:center;padding:.5rem 0;';
-      div.innerHTML = ins;
-      pos === 'after' ? target.after(div) : target.before(div);
-    }
-    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
-  });
 }
 
 /* ── TRENDING SIDEBAR ────────────────────────────────────── */
@@ -438,7 +386,7 @@ async function loadTrending() {
   const c = $('#trendingList');
   if (!c) return;
   const d = await api('get_trending');
-  if (!d.posts?.length) return;
+  if (!d.posts?.length) { c.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:.5rem">No trending posts yet.</p>'; return; }
   c.innerHTML = d.posts.map((p, i) =>
     `<a href="/article/${p.slug}" class="trending-item">
        <span class="trending-num">${i+1}</span>
@@ -457,7 +405,8 @@ function showToast(msg, type = 'info') {
   const t = document.createElement('div');
   t.className = 'toast ' + type;
   const icons = { success:'✅', warning:'⚠️', error:'❌', info:'ℹ️' };
-  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>
+    <button class="toast-close" onclick="this.parentElement.remove()" aria-label="Close">✕</button>`;
   c.appendChild(t);
   setTimeout(() => t.remove(), 4500);
 }
@@ -471,12 +420,13 @@ function animate(root = document) {
 }
 
 /* ── HELPERS ─────────────────────────────────────────────── */
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 function fmtNum(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
-function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
-
+function scrollToTop() { window.scrollTo({ top:0, behavior:'smooth' }); }
 function skeletonGrid(n) {
-  const cards = Array.from({length:n}, () => `
+  return `<div class="loading-grid">${Array.from({length:n},()=>`
     <div class="loading-card">
       <div class="skeleton loading-img"></div>
       <div class="loading-body">
@@ -484,8 +434,7 @@ function skeletonGrid(n) {
         <div class="skeleton loading-text"></div>
         <div class="skeleton loading-text sm"></div>
       </div>
-    </div>`).join('');
-  return `<div class="loading-grid">${cards}</div>`;
+    </div>`).join('')}</div>`;
 }
 
 /* ── INIT ─────────────────────────────────────────────────── */
@@ -499,20 +448,15 @@ document.addEventListener('DOMContentLoaded', () => {
   animate();
   loadSettings();
   renderBookmarks();
+  $$('#currentYear, .current-year').forEach(el => el.textContent = new Date().getFullYear());
 
-  // Keyboard shortcuts
   document.addEventListener('keydown', e => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); toggleSearch(); }
+    if ((e.metaKey||e.ctrlKey) && e.key==='k') { e.preventDefault(); toggleSearch(); }
     if (e.key === 'Escape') {
       $('#searchOverlay')?.classList.remove('active');
       $('#bookmarksModal')?.classList.remove('active');
     }
   });
-
-  // Close overlays on backdrop click
-  $('#searchOverlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) toggleSearch(); });
-  $('#bookmarksModal')?.addEventListener('click', e => { if (e.target === e.currentTarget) toggleBookmarksModal(); });
-
-  // Set current year
-  $$('#currentYear, .current-year').forEach(el => el.textContent = new Date().getFullYear());
+  $('#searchOverlay')?.addEventListener('click',  e => { if (e.target===e.currentTarget) toggleSearch(); });
+  $('#bookmarksModal')?.addEventListener('click', e => { if (e.target===e.currentTarget) toggleBookmarksModal(); });
 });

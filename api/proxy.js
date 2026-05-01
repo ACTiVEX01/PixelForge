@@ -1,65 +1,66 @@
-// api/proxy.js  — Vercel Serverless Function
-// Place this file at the ROOT of your Vercel repo as:  api/proxy.js
-//
-// How it works:
-//   Browser  →  GET /api/proxy?action=get_posts  →  Vercel Function
-//   Vercel   →  GET https://blockmines.page.gd/api/index.php?action=get_posts  (server-side, no CORS)
-//   Vercel   →  returns JSON to browser  (same origin — no CORS error)
+// api/proxy.js
+// Vercel Edge Function — runs on Vercel's edge network, not Node.js
+// This bypasses InfinityFree's bot-detection by sending real browser headers
+
+export const config = {
+  runtime: 'edge',
+};
 
 const BACKEND = 'https://blockmines.page.gd/api/index.php';
 
-export default async function handler(req, res) {
-  // Build the upstream URL — forward ALL query params
-  const params = new URLSearchParams(req.query);
-  const upstreamUrl = `${BACKEND}?${params.toString()}`;
+export default async function handler(request) {
+  const url    = new URL(request.url);
+  const params = url.searchParams.toString();
+  const upstream = `${BACKEND}?${params}`;
 
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  let response;
   try {
-    // Fetch from InfinityFree with full browser-like headers
-    // This bypasses InfinityFree's bot/referrer detection
-    const backendRes = await fetch(upstreamUrl, {
-      method: req.method === 'POST' ? 'POST' : 'GET',
+    response = await fetch(upstream, {
+      method: 'GET',
       headers: {
         'User-Agent':      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        'Accept':          'application/json, text/plain, */*',
+        'Accept':          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control':   'no-cache',
         'Referer':         'https://blockmines.page.gd/',
-        'Origin':          'https://blockmines.page.gd',
         'Connection':      'keep-alive',
-        ...(req.method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
       },
-      // Forward POST body if present
-      ...(req.method === 'POST' && req.body
-        ? { body: typeof req.body === 'string' ? req.body : JSON.stringify(req.body) }
-        : {}),
     });
-
-    const raw = await backendRes.text();
-
-    // Strip any InfinityFree-injected HTML before the JSON
-    const jsonStart = raw.indexOf('{');
-    const jsonEnd   = raw.lastIndexOf('}');
-    const clean     = jsonStart >= 0 && jsonEnd >= 0
-      ? raw.slice(jsonStart, jsonEnd + 1)
-      : raw;
-
-    // Try to parse and re-serialize clean JSON
-    let data;
-    try {
-      data = JSON.parse(clean);
-    } catch {
-      // If still not valid JSON return the raw text for debugging
-      res.setHeader('Content-Type', 'text/plain');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      return res.status(502).send('Backend returned non-JSON:\n' + raw.slice(0, 500));
-    }
-
-    // Respond to the browser
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('Access-Control-Allow-Origin', '*'); // safe — proxy adds its own CORS
-    return res.status(200).json(data);
-
   } catch (err) {
-    return res.status(502).json({ error: 'Proxy error: ' + err.message });
+    return new Response(
+      JSON.stringify({ error: 'Upstream fetch failed: ' + err.message }),
+      { status: 502, headers: corsHeaders() }
+    );
   }
+
+  const raw = await response.text();
+
+  // Strip any HTML InfinityFree injects before the JSON
+  const start = raw.indexOf('{');
+  const end   = raw.lastIndexOf('}');
+
+  if (start === -1 || end === -1) {
+    return new Response(
+      JSON.stringify({ error: 'No JSON in response', preview: raw.slice(0, 300) }),
+      { status: 502, headers: corsHeaders() }
+    );
+  }
+
+  return new Response(raw.slice(start, end + 1), {
+    status:  200,
+    headers: corsHeaders(),
+  });
+}
+
+function corsHeaders() {
+  return {
+    'Content-Type':                'application/json; charset=utf-8',
+    'Access-Control-Allow-Origin': '*',
+    'Cache-Control':               'no-store',
+  };
 }
