@@ -1,5 +1,5 @@
 /* PixelForge — main.js */
-const API = 'https://blockmines.page.gd/api/index.php';
+const API = '/api/proxy'; // Vercel proxy — avoids CORS
 
 let state = {
   bookmarks: JSON.parse(localStorage.getItem('pf-bm') || '[]'),
