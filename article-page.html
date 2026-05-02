@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta id="metaDesc"      name="description" content="">
+<meta id="ogTitle"       property="og:title" content="">
+<meta id="ogDesc"        property="og:description" content="">
+<meta id="ogImage"       property="og:image" content="">
+<meta id="ogUrl"         property="og:url" content="">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PixelForge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pixelforgeblog">
+<meta id="twTitle"  name="twitter:title"       content="">
+<meta id="twDesc"   name="twitter:description" content="">
+<meta id="twImage"  name="twitter:image"       content="">
+<link id="canonicalLink" rel="canonical" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css">
+<title id="pageTitle">Loading… | PixelForge</title>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<main style="padding-top:80px;">
+<div class="container" style="padding:2rem 2rem 0;">
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol class="bc-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+        <meta itemprop="position" content="1">
+      </li>
+      <li><span class="bc-sep" aria-hidden="true">/</span></li>
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="/articles" itemprop="item"><span itemprop="name">Articles</span></a>
+        <meta itemprop="position" content="2">
+      </li>
+      <li><span class="bc-sep" aria-hidden="true">/</span></li>
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <span class="bc-current" id="bcCurrent" itemprop="name">Article</span>
+        <meta itemprop="position" content="3">
+      </li>
+    </ol>
+  </nav>
+
+</div>
+
+<!-- CONTENT + SIDEBAR LAYOUT -->
+<div class="container" style="padding:1rem 2rem 4rem;">
+<div class="content-with-sidebar">
+
+<!-- ARTICLE -->
+<article id="articleWrap" itemscope itemtype="https://schema.org/BlogPosting">
+
+  <!-- LOADING STATE -->
+  <div id="articleLoading">
+    <div style="height:38px;width:160px;margin-bottom:1rem;" class="skeleton"></div>
+    <div style="height:52px;width:100%;margin-bottom:.5rem;" class="skeleton"></div>
+    <div style="height:28px;width:75%;margin-bottom:2rem;" class="skeleton"></div>
+    <div style="height:420px;width:100%;border-radius:16px;margin-bottom:2rem;" class="skeleton"></div>
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div style="height:16px;width:100%;" class="skeleton"></div>
+      <div style="height:16px;width:95%;" class="skeleton"></div>
+      <div style="height:16px;width:88%;" class="skeleton"></div>
+    </div>
+  </div>
+
+  <!-- ARTICLE CONTENT (hidden until loaded) -->
+  <div id="articleMain" style="display:none;">
+
+    <header class="article-header">
+      <span class="article-category" id="articleCategory"></span>
+      <h1 id="articleTitle" itemprop="headline"></h1>
+      <div class="article-meta">
+        <div class="article-author">
+          <img id="articleAuthorImg" src="" alt="" width="52" height="52" loading="eager">
+          <div class="article-author-info">
+            <h4 id="articleAuthor" itemprop="author" itemscope itemtype="https://schema.org/Person">
+              <span itemprop="name"></span>
+            </h4>
+            <p id="articleDate"><time itemprop="datePublished" id="articleTime"></time> · <span id="articleReadTime"></span></p>
+          </div>
+        </div>
+        <div class="article-stats">
+          <span class="article-stat" aria-label="Views">👁️ <span id="articleViews">0</span></span>
+          <span class="article-stat" aria-label="Comments">💬 <span id="articleCommentCount">0</span></span>
+          <div class="article-share" role="group" aria-label="Share">
+            <button class="share-btn" onclick="shareToX(document.getElementById('articleTitle').textContent)" aria-label="Share on X">𝕏</button>
+            <button class="share-btn" onclick="shareToFacebook()" aria-label="Share on Facebook">f</button>
+            <button class="share-btn" onclick="shareToReddit()" aria-label="Share on Reddit">r</button>
+            <button class="share-btn" onclick="shareToLinkedIn()" aria-label="Share on LinkedIn">in</button>
+            <button class="share-btn" onclick="shareArticle(document.getElementById('articleTitle').textContent)" aria-label="Copy link">🔗</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- FEATURED IMAGE -->
+    <div id="articleImageWrap" style="width:100%;border-radius:var(--radius);overflow:hidden;margin-bottom:2.5rem;max-height:520px;">
+      <img id="articleImage" src="" alt="" style="width:100%;height:100%;object-fit:cover;" loading="eager" itemprop="image">
+    </div>
+
+    <!-- IN-ARTICLE AD (top) -->
+    <div class="ad-inarticle" id="adInArticleTop" style="display:none;"></div>
+
+    <!-- BODY -->
+    <div class="article-content" id="articleContent" itemprop="articleBody"></div>
+
+    <!-- IN-ARTICLE AD (bottom) -->
+    <div class="ad-inarticle" id="adInArticleBottom" style="display:none;"></div>
+
+    <!-- TAGS -->
+    <div class="article-tags" id="articleTags" role="list" aria-label="Tags"></div>
+
+    <!-- REACTIONS -->
+    <div class="reactions" id="reactions" role="group" aria-label="Reactions">
+      <button class="reaction-btn" aria-label="Fire reaction">🔥 <span>0</span></button>
+      <button class="reaction-btn" aria-label="Clap reaction">👏 <span>0</span></button>
+      <button class="reaction-btn" aria-label="Gaming reaction">🎮 <span>0</span></button>
+      <button class="reaction-btn" aria-label="Idea reaction">💡 <span>0</span></button>
+      <button class="reaction-btn" aria-label="Love reaction">❤️ <span>0</span></button>
+    </div>
+
+    <!-- BOOKMARK BUTTON -->
+    <div style="margin:1.5rem 0;">
+      <button id="bookmarkBtn" class="btn-secondary" onclick="handleBookmark()" style="gap:.5rem;">
+        ☆ <span id="bookmarkLabel">Bookmark Article</span>
+      </button>
+    </div>
+
+    <!-- AUTHOR BIO -->
+    <div id="authorBio" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin:2rem 0;display:flex;gap:1.25rem;align-items:flex-start;">
+      <img id="bioPic" src="" alt="" width="72" height="72" style="border-radius:50%;object-fit:cover;border:2px solid var(--accent);flex-shrink:0;">
+      <div>
+        <h3 id="bioName" style="font-size:1rem;margin-bottom:.35rem;"></h3>
+        <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:.5rem;">PixelForge Writer</p>
+        <p id="bioBio" style="color:var(--text-secondary);font-size:.9rem;"></p>
+      </div>
+    </div>
+
+    <!-- RELATED POSTS -->
+    <section id="relatedSection" style="margin-top:3rem;padding-top:2.5rem;border-top:1px solid var(--border);" aria-labelledby="relatedTitle">
+      <h2 class="section-title" id="relatedTitle" style="margin-bottom:1.5rem;"><span class="dot" aria-hidden="true"></span> Related Articles</h2>
+      <div id="relatedGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;"></div>
+    </section>
+
+    <!-- COMMENTS -->
+    <section class="comments-section" aria-labelledby="commentsTitle">
+      <h2 class="section-title" id="commentsTitle"><span class="dot" aria-hidden="true"></span> Comments (<span id="commentCountLabel">0</span>)</h2>
+
+      <form class="comment-form" id="commentForm" style="margin-top:1.5rem;" novalidate>
+        <div class="comment-form-row">
+          <input type="text"  id="commentName"  name="name"  class="comment-input" placeholder="Your name *" required autocomplete="name" aria-label="Your name">
+          <input type="email" id="commentEmail" name="email" class="comment-input" placeholder="Email (optional)" autocomplete="email" aria-label="Email address">
+        </div>
+        <textarea id="commentText" name="comment" class="comment-input" placeholder="Share your thoughts… Be respectful and constructive." required autocomplete="off" aria-label="Comment" style="width:100%;"></textarea>
+        <div class="comment-form-actions">
+          <button class="btn-primary" type="submit">Post Comment</button>
+        </div>
+      </form>
+
+      <div class="comment-list" id="commentList" role="list" aria-label="Comments"></div>
+    </section>
+
+  </div><!-- /articleMain -->
+
+  <!-- NOT FOUND STATE -->
+  <div id="articleNotFound" style="display:none;text-align:center;padding:5rem 2rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
+    <h2>Article Not Found</h2>
+    <p style="color:var(--text-muted);margin:1rem 0 2rem;">This article doesn't exist or has been removed.</p>
+    <a href="/articles" class="btn-primary">Browse All Articles</a>
+  </div>
+
+</article>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" aria-label="Sidebar">
+
+  <!-- TRENDING -->
+  <div class="sidebar-widget">
+    <h3>🔥 Trending Now</h3>
+    <div id="trendingList">
+      <div style="height:60px;margin-bottom:.75rem;" class="skeleton"></div>
+      <div style="height:60px;margin-bottom:.75rem;" class="skeleton"></div>
+      <div style="height:60px;" class="skeleton"></div>
+    </div>
+  </div>
+
+  <!-- AD SIDEBAR -->
+  <div class="sidebar-widget ad-sidebar" id="adSidebar">
+    <div style="text-align:center;color:var(--text-muted);font-size:.75rem;padding:1rem;">Advertisement</div>
+  </div>
+
+  <!-- NEWSLETTER (compact) -->
+  <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(0,245,255,.06),rgba(255,0,229,.04));border-color:rgba(0,245,255,.2);">
+    <h3>📨 Newsletter</h3>
+    <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1rem;">Get the best gaming stories weekly.</p>
+    <form id="sidebarNewsletterForm" novalidate>
+      <input type="email" id="sidebarEmail" name="email" class="comment-input" placeholder="your@email.com" required autocomplete="email" aria-label="Email address" style="width:100%;margin-bottom:.75rem;">
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Subscribe</button>
+    </form>
+  </div>
+
+</aside>
+
+</div><!-- /content-with-sidebar -->
+</div><!-- /container -->
+
+<!-- NEWSLETTER SECTION -->
+<section id="newsletter" class="newsletter-section" aria-labelledby="nlTitle">
+  <div class="container">
+    <div class="newsletter-wrap">
+      <div class="newsletter-glow" aria-hidden="true"></div>
+      <div style="font-size:2.5rem;margin-bottom:1rem">📨</div>
+      <h2 id="nlTitle">Stay in the Game</h2>
+      <p>Get the week's biggest gaming stories, reviews, and dev insights delivered straight to your inbox.</p>
+      <form class="newsletter-form" id="newsletterForm" novalidate>
+        <input type="email" id="newsletterEmail" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+        <button type="submit">Subscribe Free</button>
+      </form>
+      <div class="newsletter-success" id="newsletterSuccess" role="alert">✅ You're in! Welcome to PixelForge 🎮</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/shared-ui.js"></script>
+<script>
+(async function () {
+  // Extract slug from URL: /article/my-post-slug
+  const slug = window.location.pathname.replace(/^\/article\//, '').replace(/\.html$/, '').replace(/\/$/, '');
+  if (!slug) { showNotFound(); return; }
+
+  const d = await api('get_post', { slug });
+  if (d.error || !d.post) { showNotFound(); return; }
+
+  const p = d.post;
+  window.postId   = p.id;
+  window.postSlug = p.slug;
+
+  /* ── SEO ──────────────────────────────────────────────── */
+  const title    = (p.seo_title    || p.title) + ' | PixelForge';
+  const desc     = p.meta_description || p.excerpt || '';
+  const canonical= 'https://pixelforge-blog.vercel.app/article/' + p.slug;
+  document.getElementById('pageTitle').textContent = title;
+  document.title = title;
+  document.getElementById('metaDesc').content  = desc;
+  document.getElementById('ogTitle').content   = p.seo_title || p.title;
+  document.getElementById('ogDesc').content    = desc;
+  document.getElementById('ogImage').content   = p.featured_image || '';
+  document.getElementById('ogUrl').content     = canonical;
+  document.getElementById('twTitle').content   = p.seo_title || p.title;
+  document.getElementById('twDesc').content    = desc;
+  document.getElementById('twImage').content   = p.featured_image || '';
+  document.getElementById('canonicalLink').href= canonical;
+
+  /* ── JSON-LD ─────────────────────────────────────────── */
+  const ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.textContent = JSON.stringify({
+    "@context":       "https://schema.org",
+    "@type":          "BlogPosting",
+    "headline":       p.title,
+    "description":    p.excerpt || '',
+    "image":          p.featured_image || '',
+    "datePublished":  p.published_at,
+    "dateModified":   p.updated_at || p.published_at,
+    "author":         { "@type":"Person","name":p.author_name||'Staff' },
+    "publisher":      { "@type":"Organization","name":"PixelForge","logo":{"@type":"ImageObject","url":"https://pixelforge-blog.vercel.app/assets/images/logo.png"} },
+    "mainEntityOfPage":{"@type":"WebPage","@id":canonical},
+    "wordCount":      (p.content||'').split(' ').length,
+    "articleSection": p.category,
+    "keywords":       (p.tags||''),
+  });
+  document.head.appendChild(ld);
+
+  /* ── FILL CONTENT ────────────────────────────────────── */
+  const pubDate = p.published_at ? new Date(p.published_at) : null;
+  const fmtDate = pubDate ? pubDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+  const words   = (p.content||'').split(' ').length;
+  const mins    = Math.max(1, Math.ceil(words / 200));
+
+  document.getElementById('bcCurrent').textContent     = p.title;
+  document.getElementById('articleCategory').textContent= p.category.replace(/-/g,' ').toUpperCase();
+  document.getElementById('articleCategory').className = 'article-category badge ' + p.category;
+  document.getElementById('articleTitle').textContent  = p.title;
+  const authorNameEl = document.querySelector('#articleAuthor [itemprop="name"]');
+  if (authorNameEl) authorNameEl.textContent = p.author_name || 'Staff';
+  document.getElementById('articleTime').textContent   = fmtDate;
+  document.getElementById('articleTime').dateTime      = p.published_at || '';
+  document.getElementById('articleReadTime').textContent = mins + ' min read';
+  document.getElementById('articleViews').textContent  = fmtNum(p.views || 0);
+  document.getElementById('articleCommentCount').textContent = (p.comments||[]).length;
+
+  const img = document.getElementById('articleImage');
+  if (p.featured_image) {
+    img.src = p.featured_image;
+    img.alt = p.title;
+  } else {
+    document.getElementById('articleImageWrap').style.display = 'none';
+  }
+
+  const authorImg = document.getElementById('articleAuthorImg');
+  if (p.author_avatar) { authorImg.src = p.author_avatar; authorImg.alt = p.author_name||''; }
+  else authorImg.style.display = 'none';
+
+  document.getElementById('articleContent').innerHTML = p.content || '';
+
+  // Tags
+  const tagsEl = document.getElementById('articleTags');
+  const tags = (p.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+  tagsEl.innerHTML = tags.map(t =>
+    `<a href="/articles?tag=${encodeURIComponent(t)}" class="article-tag" role="listitem">#${esc(t)}</a>`
+  ).join('');
+
+  // Bookmark button
+  updateBookmarkBtn(p.slug);
+
+  // Author bio
+  if (p.author_name) {
+    const bio = document.getElementById('authorBio');
+    bio.style.display = 'flex';
+    document.getElementById('bioName').textContent = p.author_name;
+    if (p.author_avatar) document.getElementById('bioPic').src = p.author_avatar;
+  }
+
+  // Related posts
+  if (p.related && p.related.length) {
+    const relGrid = document.getElementById('relatedGrid');
+    relGrid.innerHTML = p.related.map(r => {
+      const rd = r.published_at ? new Date(r.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      return `<a href="/article/${r.slug}" style="text-decoration:none;">
+        <div class="blog-card">
+          <div class="card-image" style="height:140px;">
+            <img src="${r.featured_image||'/assets/images/placeholder.jpg'}" alt="${esc(r.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="card-body" style="padding:1rem;">
+            <h3 style="font-size:.95rem;margin-bottom:.35rem;">${esc(r.title)}</h3>
+            <p style="color:var(--text-muted);font-size:.8rem;">${rd}</p>
+          </div>
+        </div>
+      </a>`;
+    }).join('');
+  } else {
+    document.getElementById('relatedSection').style.display = 'none';
+  }
+
+  // Comments
+  renderComments(p.comments || []);
+
+  // Show content, hide loader
+  document.getElementById('articleLoading').style.display = 'none';
+  document.getElementById('articleMain').style.display    = 'block';
+
+  // Init interactions
+  initReactions();
+  initComments();
+  loadTrending();
+  animate();
+
+  // Sidebar newsletter
+  const snf = document.getElementById('sidebarNewsletterForm');
+  if (snf) {
+    snf.addEventListener('submit', async e => {
+      e.preventDefault();
+      const em = document.getElementById('sidebarEmail').value;
+      const d2 = await api('subscribe', { email: em });
+      showToast(d2.message || 'Subscribed!', 'success');
+      snf.reset();
+    });
+  }
+})();
+
+function showNotFound() {
+  document.getElementById('articleLoading').style.display = 'none';
+  document.getElementById('articleNotFound').style.display = 'block';
+  document.title = 'Article Not Found | PixelForge';
+}
+
+function handleBookmark() {
+  const slug = window.postSlug;
+  if (!slug) return;
+  toggleBookmark(slug);
+  updateBookmarkBtn(slug);
+}
+
+function updateBookmarkBtn(slug) {
+  const btn   = document.getElementById('bookmarkBtn');
+  const label = document.getElementById('bookmarkLabel');
+  if (!btn || !label) return;
+  const bm = isBookmarked(slug);
+  label.textContent = bm ? 'Bookmarked ★' : 'Bookmark Article';
+  btn.style.borderColor = bm ? 'var(--accent)' : '';
+  btn.style.color       = bm ? 'var(--accent)' : '';
+}
+
+function renderComments(comments) {
+  const list  = document.getElementById('commentList');
+  const label = document.getElementById('commentCountLabel');
+  if (label) label.textContent = comments.length;
+  if (!list) return;
+  if (!comments.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">💬</div><p>No comments yet. Be the first!</p></div>';
+    return;
+  }
+  list.innerHTML = comments.map(c => {
+    const d = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const initials = (c.author_name||'?')[0].toUpperCase();
+    return `<div class="comment-item" role="listitem">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a0a0f;flex-shrink:0;font-size:1.1rem;">${initials}</div>
+      <div class="comment-content">
+        <div class="comment-header">
+          <span class="comment-author">${esc(c.author_name)}</span>
+          <span class="comment-date">${d}</span>
+        </div>
+        <p class="comment-text">${esc(c.content)}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>
