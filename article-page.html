@@ -238,7 +238,7 @@
 <script>
 (async function () {
   // Extract slug from URL: /article/my-post-slug
-  const slug = window.location.pathname.replace(/^\/article\//, '').replace(/\.html$/, '').replace(/\/$/, '');
+  const slug = new URLSearchParams(window.location.search).get('s') || '';
   if (!slug) { showNotFound(); return; }
 
   const d = await api('get_post', { slug });
@@ -251,7 +251,7 @@
   /* ── SEO ──────────────────────────────────────────────── */
   const title    = (p.seo_title    || p.title) + ' | PixelForge';
   const desc     = p.meta_description || p.excerpt || '';
-  const canonical= 'https://pixelforge-blog.vercel.app/article/' + p.slug;
+  const canonical= window.location.origin + '/article-page?s=' + p.slug;
   document.getElementById('pageTitle').textContent = title;
   document.title = title;
   document.getElementById('metaDesc').content  = desc;
@@ -339,7 +339,7 @@
     const relGrid = document.getElementById('relatedGrid');
     relGrid.innerHTML = p.related.map(r => {
       const rd = r.published_at ? new Date(r.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-      return `<a href="/article/${r.slug}" style="text-decoration:none;">
+      return `<a href="/article-page?s=${r.slug}" style="text-decoration:none;">
         <div class="blog-card">
           <div class="card-image" style="height:140px;">
             <img src="${r.featured_image||'/assets/images/placeholder.jpg'}" alt="${esc(r.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">

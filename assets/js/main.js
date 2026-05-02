@@ -1,6 +1,6 @@
 /* PixelForge — main.js */
 // API points to Vercel Edge proxy — never calls InfinityFree directly from browser
-const API = 'https://steep-cell-18fb.adty-swn.workers.dev/';
+const API = 'https://steep-cell-18fb.adty-swn.workers.dev';
 
 let state = {
   bookmarks: JSON.parse(localStorage.getItem('pf-bm') || '[]'),
@@ -105,7 +105,7 @@ async function handleSearch(q) {
     const d = await api('search', { q });
     if (d.posts && d.posts.length) {
       r.innerHTML = d.posts.map(p =>
-        `<a href="/article/${p.slug}" class="search-result-item">
+        `<a href="/article-page?s=${p.slug}" class="search-result-item">
            <img src="${p.featured_image || '/assets/images/placeholder.jpg'}" alt="${esc(p.title)}" loading="lazy">
            <div class="search-result-info">
              <h4>${esc(p.title)}</h4>
@@ -144,7 +144,7 @@ function renderBookmarks() {
     return;
   }
   l.innerHTML = state.bookmarks.map(slug =>
-    `<a href="/article/${slug}" class="bookmark-item">
+    `<a href="/article-page?s=${slug}" class="bookmark-item">
        <div style="flex:1"><strong>${slug.replace(/-[a-z0-9]{6}$/, '').replace(/-/g, ' ')}</strong></div>
      </a>`
   ).join('');
@@ -166,7 +166,7 @@ function renderCards(posts) {
     const bm = isBookmarked(p.slug);
     return `<article class="blog-card fade-in" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="card-image">
-    <a href="/article/${p.slug}">
+    <a href="/article-page?s=${p.slug}">
       <img src="${p.featured_image || '/assets/images/placeholder.jpg'}" alt="${esc(p.title)}" loading="lazy" itemprop="image">
     </a>
     <div class="card-overlay"></div>
@@ -181,7 +181,7 @@ function renderCards(posts) {
       <span class="badge ${p.category}">${p.category.replace(/-/g,' ').toUpperCase()}</span>
       ${tags}
     </div>
-    <h3 itemprop="headline"><a href="/article/${p.slug}">${esc(p.title)}</a></h3>
+    <h3 itemprop="headline"><a href="/article-page?s=${p.slug}">${esc(p.title)}</a></h3>
     <p class="card-excerpt" itemprop="description">${esc(p.excerpt||'')}</p>
     <div class="card-footer">
       <div class="card-author">
@@ -205,7 +205,7 @@ function renderCards(posts) {
 function renderFeatured(post) {
   if (!post) return '';
   const d = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
-  return `<a href="/article/${post.slug}" class="featured-post fade-in" itemscope itemtype="https://schema.org/BlogPosting">
+  return `<a href="/article-page?s=${post.slug}" class="featured-post fade-in" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="featured-image">
     <img src="${post.featured_image||'/assets/images/placeholder.jpg'}" alt="${esc(post.title)}" loading="eager" itemprop="image">
     <span class="featured-badge">⭐ Featured</span>
@@ -316,7 +316,7 @@ function scrollToNewsletter() { $('#newsletter')?.scrollIntoView({ behavior:'smo
 
 /* ── SHARE ────────────────────────────────────────────────── */
 function sharePost(title, slug) {
-  const url = window.location.origin + '/article/' + slug;
+  const url = window.location.origin + '/article-page?s=' + slug;
   if (navigator.share) navigator.share({ title, url }).catch(()=>{});
   else navigator.clipboard.writeText(url).then(() => showToast('Link copied! 🔗', 'success'));
 }
@@ -388,7 +388,7 @@ async function loadTrending() {
   const d = await api('get_trending');
   if (!d.posts?.length) { c.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:.5rem">No trending posts yet.</p>'; return; }
   c.innerHTML = d.posts.map((p, i) =>
-    `<a href="/article/${p.slug}" class="trending-item">
+    `<a href="/article-page?s=${p.slug}" class="trending-item">
        <span class="trending-num">${i+1}</span>
        <div class="trending-info">
          <h4>${esc(p.title)}</h4>
