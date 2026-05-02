@@ -1,6 +1,6 @@
 /* PixelForge — main.js */
 // API points to Vercel Edge proxy — never calls InfinityFree directly from browser
-const API = '/api/proxy';
+const API = 'https://steep-cell-18fb.adty-swn.workers.dev/';
 
 let state = {
   bookmarks: JSON.parse(localStorage.getItem('pf-bm') || '[]'),
